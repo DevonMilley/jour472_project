@@ -46,13 +46,7 @@ View(la_payouts)
 
 la_payouts <- la_payouts %>% mutate(AMOUNT=as.numeric(parse_number(AMOUNT)))
 
-#sum payouts for 2018
 
-la_payouts%>%
-  group_by(Year)%>%
-    summarize(
-    count = n(),
-    total = sum(AMOUNT))
 
 ```
 
@@ -69,12 +63,22 @@ In this notebook, we are reverse engineering five sentences from the story.
 3. Removed the /$ from the amount field.
 4. Converted the amount field to a numeric datatype.
 5. Grouped cases by year, summarized total payout amounts for each year.
+6. Arranged the results by the greatest total.
 
 
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Analysis summary**: The results of our analysis confirm what the LA Times reported. According to the results of our reverse engineering, Los Angeles' total for all types of payouts was more than $201 million, which is the highest it's ever been. [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
+#sum payouts for 2018
+
+la_payouts%>%
+  group_by(Year)%>%
+    summarize(
+    count = n(),
+    total = sum(AMOUNT)) %>% 
+  arrange(desc(total))
+
 
 # Display results of code below this codeblock
 

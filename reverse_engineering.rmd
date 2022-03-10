@@ -86,7 +86,7 @@ la_payouts%>%
 
 ### Sentence 2
 
-* **Sentence text**: [Paste in sentence to engineer here]
+* **Sentence text**: “Thousands of legal battles involving the Los Angeles Police Department, including a rash of recent settlements over police shootings and wrongful imprisonment, have added up to more than 40% of the total — a higher sum than any other city department, the analysis showed. That includes more than $24 million paid to two men who were freed after decades in prison, along with lawsuits over arrests, injuries, car crashes and alleged retaliation and discrimination against its own employees.”
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
@@ -98,7 +98,7 @@ la_payouts%>%
 
 ### Sentence 3
 
-* **Sentence text**: [Paste in sentence to engineer here]
+* **Sentence text**: “Lawsuits tied to the city departments that oversee its streets and sidewalks, including the Bureau of Street Services and the Department of Transportation, accounted for a growing share. Legal payouts for “dangerous conditions” have rivaled and, last budget year, even exceeded the cost of lawsuits over police misconduct, the analysis found. In May, the city attorney’s office warned that there had been “unprecedented growth” in such payouts.”
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}

@@ -86,23 +86,50 @@ la_payouts%>%
 
 ### Sentence 2
 
-* **Sentence text**: [Paste in sentence to engineer here]
+* **Sentence text**:Thousands of legal battles involving the Los Angeles Police Department, including a rash of recent settlements over police shootings and wrongful imprisonment, have added up to more than 40% of the total — a higher sum than any other city department, the analysis showed. 
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
+la_payouts%>%
+  group_by(DEPARTMENT)%>%
+    summarize(
+    count = n(),
+    total = sum(AMOUNT)) %>% 
+  arrange(desc(total))
+
+la_payouts%>%
+  filter(AMOUNT > 0)%>%
+  summarize(
+    total= sum(AMOUNT))
+  
 
 # Display results of code below this codeblock
+374824384/886979072
 
 ```
 
 ### Sentence 3
 
-* **Sentence text**: [Paste in sentence to engineer here]
+* **Sentence text**:  Legal payouts for “dangerous conditions” have rivaled and, last budget year, even exceeded the cost of lawsuits over police misconduct, the analysis found
+
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
+la_payouts%>%
+  filter(Year == 2018, (str_detect(CASE.TYPE, 'Dangerous Condition')))%>%
+    summarize(
+    count = n(),
+    total = sum(AMOUNT)) %>% 
+  arrange(desc(total))
+
+la_payouts%>%
+  filter(Year == 2018 , DEPARTMENT == 'Police Department')%>%
+    summarize(
+    count = n(),
+    total = sum(AMOUNT))%>%
+        arrange(desc(total))
 
 # Display results of code below this codeblock
 
@@ -110,11 +137,14 @@ la_payouts%>%
 
 ### Sentence 4
 
-* **Sentence text**: [Paste in sentence to engineer here]
+* **Sentence text**: Many cases have arisen from people being wounded or killed while crossing city streets: In recent years, the city agreed to pay 15 dollars million to end a legal battle over a man who was gravely injured while crossing Franklin Avenue in Hollywood, another 15 million dollars to the family of two girls hit in a North Hollywood crosswalk and $9.5 million to the family of a teenage girl fatally struck by a taxi near Dockweiler State Beach
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
+la_payouts_traffic <- la_payouts%>%
+  filter(DEPARTMENT == 'Department of Transportation' | (str_detect(CASE.TYPE, 'Traffic')) | DEPARTMENT == 'DEPARTMENT OF TRANSPORTATION')%>%
+  arrange(desc(AMOUNT))
 
 # Display results of code below this codeblock
 

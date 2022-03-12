@@ -29,6 +29,7 @@ install.packages("tidyverse")
 options(scipen=999)
 install.packages("janitor")
 library(tidyverse)
+library(janitor)
 
 ```
 
@@ -89,29 +90,37 @@ la_payouts%>%
 * **Sentence text**: “Thousands of legal battles involving the Los Angeles Police Department, including a rash of recent settlements over police shootings and wrongful imprisonment, have added up to more than 40% of the total — a higher sum than any other city department, the analysis showed. That includes more than $24 million paid to two men who were freed after decades in prison, along with lawsuits over arrests, injuries, car crashes and alleged retaliation and discrimination against its own employees.”
 
 * **General steps to reverse engineer**:
-
-
+1. To determine that the L.A. Police Department has accounted for 40% of the total L.A. cash settlements, we must:
+  a. Determine the total settlement amounts for every department.
+  b. Determine the total settlement amount for all of L.A.
+2. We start by grouping the settlement amounts by 'DEPARTMENT' and organizing them in descending order.
+3. We then determine the total settlement amount by summarizing all amounts greater than 0.
+4. Lastly, we create a new column that accounts for percentage share of each department (through dividing the department's aggregate by the total settlement amount)
 
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
 la_payouts%>%
+  filter(AMOUNT > 0)%>%
+  summarize(
+    total= sum(AMOUNT))
+
+la_payouts_departments<-la_payouts%>%
   group_by(DEPARTMENT)%>%
     summarize(
     count = n(),
     total = sum(AMOUNT)) %>%
   arrange(desc(total))
 
-la_payouts%>%
-  filter(AMOUNT > 0)%>%
-  summarize(
-    total= sum(AMOUNT))
+la_payouts_pct_share <- la_payouts_departments%>%
+  mutate(pct_share =(total/886979072))
+
+  
 
 
 # Display results of code below this codeblock
-374824384/886979072
-
+la_payouts_pct_share
 ```
 
 ### Sentence 3
@@ -120,8 +129,10 @@ la_payouts%>%
 
 
 * **General steps to reverse engineer**:
-
-
+1. For this sentence, we must determine whether L.A. payouts for "dangerous conditions" accounted for more costs than the L.A. Police Department in 2018.
+2. To do so, we filter all cases by year (2018) and with the Case.Type description of "dangerous conditions."
+3. Next, we summarize the total amount of settlements that meet those conditions.
+4. Lastly, we do the same process for 2018 L.A. Police Department cases and compare the totals of each data frame.
 
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
@@ -151,8 +162,6 @@ la_payouts%>%
 
 
 * **General steps to reverse engineer**:
-
-
 
 
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]

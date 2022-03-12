@@ -97,7 +97,11 @@ la_payouts%>%
 3. We then determine the total settlement amount by summarizing all amounts greater than 0.
 4. Lastly, we create a new column that accounts for percentage share of each department (through dividing the department's aggregate by the total settlement amount)
 
+<<<<<<< HEAD
 * **Analysis summary**: Our results show thousands of legal cases involving the police department have added up to 42.26% of LA's total payout costs, which matches what the LA Times found. We also found that [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+=======
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+>>>>>>> 1e3f19eefb425d64eaa44ecb70bcfb181f86d957
 
 ```{r}
 # Put code to reverse engineer sentence here
@@ -113,6 +117,7 @@ la_payouts_departments<-la_payouts%>%
     total_amount = sum(AMOUNT)) %>%
   arrange(desc(total_amount))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 la_payouts%>%
   filter(AMOUNT > 0) %>% 
@@ -135,6 +140,14 @@ la_payouts %>%
 =======
 >>>>>>> 1e3f19eefb425d64eaa44ecb70bcfb181f86d957
 
+=======
+la_payouts_pct_share <- la_payouts_departments%>%
+  mutate(pct_share =(total/886979072))
+
+  
+
+
+>>>>>>> 1e3f19eefb425d64eaa44ecb70bcfb181f86d957
 # Display results of code below this codeblock
 la_payouts_pct_share
 ```

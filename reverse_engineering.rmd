@@ -102,7 +102,7 @@ To determine whether the police department paid more than $24 million to two men
 3. Then, we added the first two rows to get $25 million.
 
 
-**Analysis summary**: Our results show thousands of legal cases involving the police department have added up to 42.26% of LA's total payout costs, which matches what the LA Times found. We also found that th epolice department paid $25 million to two people with a case type of "Police - False Arrest/Detention/Imprisonment," which matches what the LA Times found.
+**Analysis summary**: Our results show thousands of legal cases involving the police department have added up to 42.26% of LA's total payout costs, which matches what the LA Times found. We also found that the police department paid $25 million to two people with a case type of "Police - False Arrest/Detention/Imprisonment," which matches what the LA Times found.
 
 ```{r}
 # Put code to reverse engineer sentence here
@@ -151,8 +151,7 @@ la_payouts_pct_share
 3. Next, we summarize the total amount of settlements that meet those conditions.
 4. Lastly, we do the same process for 2018 L.A. Police Department cases and compare the totals of each data frame.
 
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
-
+* **Analysis summary**:After doing steps 2 and 3 we see that we get a case count of 321 for a total of $30,864,939. Then after doing the same process for 2018 LA Police Department Cases we get a count of 124 for a total of $19,162,284, showing that LA Payouts for "Dangerous conditions did in fact account for more costs as stated in the text.
 ```{r}
 # Put code to reverse engineer sentence here
 la_payouts%>%
@@ -168,6 +167,7 @@ la_payouts%>%
     count = n(),
     total = sum(AMOUNT))%>%
         arrange(desc(total))
+
 
 # Display results of code below this codeblock
 

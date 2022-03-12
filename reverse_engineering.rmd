@@ -25,9 +25,7 @@ In this notebook, we are reverse engineering the story, L.A. is slammed with rec
 Loading required libraries for this analysis.
 
 ```{r echo=FALSE, message=FALSE}
-install.packages("tidyverse")
 options(scipen=999)
-install.packages("janitor")
 library(tidyverse)
 library(janitor)
 
@@ -56,9 +54,9 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ### Sentence 1
 
-* **Sentence text**: “Last budget year, the total for all types of payouts reached $201 million — the highest on record — but city officials are unsure whether that is the largest amount because records go back only two decades.”
+**Sentence text**: “Last budget year, the total for all types of payouts reached $201 million — the highest on record — but city officials are unsure whether that is the largest amount because records go back only two decades.”
 
-* **General steps to reverse engineer**:
+**General steps to reverse engineer**:
 1. Downloaded an excel sheet of all LA City Payouts between 2006-2018 from LA Times Github, deleted extraneous titles that could get in the way when converted to .csv.
 2. Converted the file to a .csv.
 3. Removed the /$ from the amount field.
@@ -67,7 +65,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 6. Arranged the results by the greatest total.
 
 
-* **Analysis summary**: The results of our analysis confirm what the LA Times reported. According to the results of our reverse engineering, Los Angeles' total for all types of payouts was more than $201 million, which is the highest it's ever been. [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+**Analysis summary**: The results of our analysis confirm what the LA Times reported. According to the results of our reverse engineering, Los Angeles' total for all types of payouts was more than $201 million, which is the highest it's ever been.
 
 ```{r}
 # Put code to reverse engineer sentence here
@@ -87,29 +85,27 @@ la_payouts%>%
 
 ### Sentence 2
 
-* **Sentence text**: “Thousands of legal battles involving the Los Angeles Police Department, including a rash of recent settlements over police shootings and wrongful imprisonment, have added up to more than 40% of the total — a higher sum than any other city department, the analysis showed. That includes more than $24 million paid to two men who were freed after decades in prison, along with lawsuits over arrests, injuries, car crashes and alleged retaliation and discrimination against its own employees.”
+**Sentence text**: “Thousands of legal battles involving the Los Angeles Police Department, including a rash of recent settlements over police shootings and wrongful imprisonment, have added up to more than 40% of the total — a higher sum than any other city department, the analysis showed. That includes more than $24 million paid to two men who were freed after decades in prison, along with lawsuits over arrests, injuries, car crashes and alleged retaliation and discrimination against its own employees.”
 
-* **General steps to reverse engineer**:
-1. To determine that the L.A. Police Department has accounted for 40% of the total L.A. cash settlements, we must:
+**General steps to reverse engineer**:
+To determine that the L.A. Police Department has accounted for 40% of the total L.A. cash settlements, we must:
   a. Determine the total settlement amounts for every department.
   b. Determine the total settlement amount for all of L.A.
-2. We start by grouping the settlement amounts by 'DEPARTMENT' and organizing them in descending order.
-3. We then determine the total settlement amount by summarizing all amounts greater than 0.
-4. Lastly, we create a new column that accounts for percentage share of each department (through dividing the department's aggregate by the total settlement amount)
+1. We start by grouping the settlement amounts by 'DEPARTMENT' and organizing them in descending order.
+2. We then determine the total settlement amount by summarizing all amounts greater than 0.
+3. Lastly, we create a new column that accounts for percentage share of each department (through dividing the department's aggregate by the total settlement amount)
+To determine whether the police department paid more than $24 million to two men who were wrongly imprisoned, we must:
+  a. Determine which cases from the police department relate to someone being wrongly imprisoned.
+  b. Determine how much the police department paid in those cases.
+1. We started by filtering all the payout cases for just ones from the police department and where case type was "Police - False Arrest/Detention/Imprisonment.
+2. We then arrange the cases in descending order.
+3. Then, we added the first two rows to get $25 million.
 
-<<<<<<< HEAD
-* **Analysis summary**: Our results show thousands of legal cases involving the police department have added up to 42.26% of LA's total payout costs, which matches what the LA Times found. We also found that [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
-=======
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
->>>>>>> 1e3f19eefb425d64eaa44ecb70bcfb181f86d957
+
+**Analysis summary**: Our results show thousands of legal cases involving the police department have added up to 42.26% of LA's total payout costs, which matches what the LA Times found. We also found that th epolice department paid $25 million to two people with a case type of "Police - False Arrest/Detention/Imprisonment," which matches what the LA Times found.
 
 ```{r}
 # Put code to reverse engineer sentence here
-la_payouts%>%
-  filter(AMOUNT > 0)%>%
-  summarize(
-    total= sum(AMOUNT))
-
 la_payouts_departments<-la_payouts%>%
   group_by(DEPARTMENT)%>%
     summarize(
@@ -117,38 +113,30 @@ la_payouts_departments<-la_payouts%>%
     total_amount = sum(AMOUNT)) %>%
   arrange(desc(total_amount))
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 la_payouts%>%
   filter(AMOUNT > 0) %>% 
   summarize(
     total_amount_of_all_cases = sum(AMOUNT))
-=======
+
 la_payouts_pct_share <- la_payouts_departments%>%
-  mutate(pct_share =(total/886979072))
->>>>>>> 1e3f19eefb425d64eaa44ecb70bcfb181f86d957
+  mutate(pct_share =(total_amount/886979072)*100)
 
-  
 
-<<<<<<< HEAD
-# Display results of code below this codeblock
-(374824384/886979072)*100
-
-la_payouts %>% 
-  filter(DEPARTMENT=="Police Department") %>% 
+la_payouts_wrong_imprisonment <- la_payouts %>% 
+  filter(DEPARTMENT=="Police Department" & CASE.TYPE == "Police - False Arrest/Detention/Imprisonment") %>%
+  summarise(
+    AMOUNT
+  ) %>% 
   arrange(desc(AMOUNT))
-=======
->>>>>>> 1e3f19eefb425d64eaa44ecb70bcfb181f86d957
 
-=======
-la_payouts_pct_share <- la_payouts_departments%>%
-  mutate(pct_share =(total/886979072))
-
-  
+first_two_cases_wrong_imprisonment <- la_payouts_wrong_imprisonment %>% 
+  summarise(
+    AMOUNT[1] + AMOUNT[2]
+    )
 
 
->>>>>>> 1e3f19eefb425d64eaa44ecb70bcfb181f86d957
 # Display results of code below this codeblock
+first_two_cases_wrong_imprisonment
 la_payouts_pct_share
 ```
 

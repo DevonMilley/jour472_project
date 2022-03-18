@@ -175,13 +175,16 @@ la_payouts%>%
 
 ### Sentence 4
 
-* **Sentence text**: Many cases have arisen from people being wounded or killed while crossing city streets: In recent years, the city agreed to pay 15 dollars million to end a legal battle over a man who was gravely injured while crossing Franklin Avenue in Hollywood, another 15 million dollars to the family of two girls hit in a North Hollywood crosswalk and $9.5 million to the family of a teenage girl fatally struck by a taxi near Dockweiler State Beach.
+* **Sentence text**: Many cases have arisen from people being wounded or killed while crossing city streets: In recent years, the city agreed to pay 15 million dollars to end a legal battle over a man who was gravely injured while crossing Franklin Avenue in Hollywood, another 15 million dollars to the family of two girls hit in a North Hollywood crosswalk and $9.5 million to the family of a teenage girl fatally struck by a taxi near Dockweiler State Beach.
 
 
 * **General steps to reverse engineer**:
+1. To certify what the story claims, we need to identify the traffic cases that resulted in these settlements and the amount paid.
+2. We did so by filtering cases by the Department of Transportation OR a CASE.TYPE of "Traffic." 
+3. Next we organized the filtered data by payout amount, descending. 
 
 
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Analysis summary**: We were able to find the two 15 million dollar cases but not the 9.5 million one.
 
 ```{r}
 # Put code to reverse engineer sentence here

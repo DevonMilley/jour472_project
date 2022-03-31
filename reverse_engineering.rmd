@@ -190,19 +190,35 @@ la_payouts_traffic <- la_payouts%>%
   arrange(desc(AMOUNT))
 
 # Display results of code below this codeblock
+la_payouts_traffic
 
 ```
 
 ### Sentence 5
 
-* **Sentence text**: [Paste in sentence to engineer here]
+* **Sentence text**: “Beyond the mammoth cases, a pileup of other large payouts has padded the tab, a Times analysis of city payouts found. While the total number of payouts has dipped over time, the average amount has increased. Last budget year, the city paid out 30 settlements of $1 million or more — five times as many as a decade before.”
+
+* **General steps to reverse engineer**:
+
+
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
+la_payouts_by_date <- la_payouts %>%
+  group_by(Year) %>%
+  summarise(
+    total_payouts=n()
+  )
+
+la_payouts_by_date
+
+la_payouts_lines <- la_payouts_by_date %>%
+  ggplot() + 
+  geom_line(aes(x=Year, y=total_payouts)) 
 
 # Display results of code below this codeblock
-
+la_payouts_lines
 ```
 
 -30-

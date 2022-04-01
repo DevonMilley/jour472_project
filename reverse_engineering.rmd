@@ -202,13 +202,15 @@ la_payouts_traffic
 To determine if the total number of payouts has decreased over time:
 1. create a tibble that groups the data by year and counts each case
 2. create a line chart using year as the x axis and total payouts (the count) as the y axis
-To determine if the average amount of payouts has incresaed over time:
+To determine if the average amount of payouts has increased over time:
 1. create a tibble that groups by year and calculates the average amount of payouts
 2. create a line chart that uses year as the x axis and average amount of payouts as the y axis
+To determine if the city paid five times as many $1 million+ settlements in 2017 as in 2007:
+1. create a tibble that filters cases for only the year 2017 and only with amounts greater than or equal to $1 million
+2. create a tibble that filters cases for only the year 2007 and only with amounts greater than or equalto $1 million
 
 
-
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Analysis summary**: The two line charts confirm that the number of payouts has decreased over time, but the average amount has increased over time. My tables show that the city payed 8 settlements of \$1 million or more in 2007 and 30 settlements of \$1 million or more in 2017. That would disprove that there were five times as many \$1million+ settlements in 2017 as in the decade before.
 
 ```{r}
 # Put code to reverse engineer sentence here
@@ -248,12 +250,12 @@ la_payouts_average_lines
 million_dollar_payouts_2017 <- la_payouts %>% 
   filter(Year == 2017 & AMOUNT >= 1000000)
 
-million_dollar_payouts_2018 <- la_payouts %>% 
+million_dollar_payouts_2007 <- la_payouts %>% 
   filter(Year == 2007 & AMOUNT >= 1000000)
 
 # Display results of code below this codeblock
 million_dollar_payouts_2017
-million_dollar_payouts_2018
+million_dollar_payouts_2007
 ```
 
 -30-

@@ -193,19 +193,72 @@ la_payouts_traffic <- la_payouts%>%
   arrange(desc(AMOUNT))
 
 # Display results of code below this codeblock
+la_payouts_traffic
 
 ```
 
 ### Sentence 5
 
-* **Sentence text**: [Paste in sentence to engineer here]
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Sentence text**: “Beyond the mammoth cases, a pileup of other large payouts has padded the tab, a Times analysis of city payouts found. While the total number of payouts has dipped over time, the average amount has increased. Last budget year, the city paid out 30 settlements of $1 million or more — five times as many as a decade before.”
+
+* **General steps to reverse engineer**:
+To determine if the total number of payouts has decreased over time:
+1. create a tibble that groups the data by year and counts each case
+2. create a line chart using year as the x axis and total payouts (the count) as the y axis
+To determine if the average amount of payouts has increased over time:
+1. create a tibble that groups by year and calculates the average amount of payouts
+2. create a line chart that uses year as the x axis and average amount of payouts as the y axis
+To determine if the city paid five times as many $1 million+ settlements in 2017 as in 2007:
+1. create a tibble that filters cases for only the year 2017 and only with amounts greater than or equal to $1 million
+2. create a tibble that filters cases for only the year 2007 and only with amounts greater than or equalto $1 million
+
+
+* **Analysis summary**: The two line charts confirm that the number of payouts has decreased over time, but the average amount has increased over time. My tables show that the city payed 8 settlements of \$1 million or more in 2007 and 30 settlements of \$1 million or more in 2017. That would disprove that there were five times as many \$1million+ settlements in 2017 as in the decade before.
 
 ```{r}
 # Put code to reverse engineer sentence here
+la_payouts_by_date <- la_payouts %>%
+  group_by(Year) %>%
+  summarise(
+    total_payouts=n()
+  )
+
+la_payouts_lines <- la_payouts_by_date %>%
+  ggplot() + 
+  geom_line(aes(x=Year, y=total_payouts)) +
+  labs(
+    title="Total number of payouts in LA by year\n"
+  )
+
+la_payouts_average_by_date <- la_payouts %>% 
+  group_by(Year) %>% 
+  summarise(
+    total_payouts = n(),
+    average_payouts = sum(AMOUNT)/total_payouts
+  )
+
+la_payouts_average_lines <- la_payouts_average_by_date %>% 
+  ggplot() + 
+  geom_line(aes(x=Year, y=average_payouts)) +
+  labs(
+    title="Average payouts in LA by year\n"
+  )
 
 # Display results of code below this codeblock
+la_payouts_lines
+la_payouts_average_lines
+```
 
+```{r}
+million_dollar_payouts_2017 <- la_payouts %>% 
+  filter(Year == 2017 & AMOUNT >= 1000000)
+
+million_dollar_payouts_2007 <- la_payouts %>% 
+  filter(Year == 2007 & AMOUNT >= 1000000)
+
+# Display results of code below this codeblock
+million_dollar_payouts_2017
+million_dollar_payouts_2007
 ```
 
 -30-

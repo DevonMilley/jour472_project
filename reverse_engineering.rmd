@@ -184,7 +184,7 @@ la_payouts%>%
 3. Next we organized the filtered data by payout amount, descending. 
 
 
-* **Analysis summary**: We were able to find the two 15 million dollar cases but not the 9.5 million one.
+* **Analysis summary**: We were able to find the two 15 million dollar cases but not the 9.5 million one. I am not sure which other parameters could be added to receive the same results as the LA Times reporters, as these are all of the variables that I noticed that retrieve traffic related cases. When looking into their Github notebook, I did not find any other insights. 
 
 ```{r}
 # Put code to reverse engineer sentence here

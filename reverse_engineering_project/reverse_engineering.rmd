@@ -1,0 +1,264 @@
+---
+title: "Reverse Engineering Project"
+author: "Devon Milley, Timothy Dashiell, Emmett Gartner"
+date: "03/12/2022"
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+In this notebook, we are reverse engineering the story, L.A. is slammed with record costs for legal payouts  (https://www.latimes.com/local/lanow/la-me-ln-city-payouts-20180627-story.html)
+
+## Load libraries
+
+Loading required libraries for this analysis.
+
+```{r echo=FALSE, message=FALSE}
+options(scipen=999)
+library(tidyverse)
+library(janitor)
+
+```
+
+## Load and Cleaning Data
+
+In this section, describe the source of the data, write a basic data dictionary for data you are working with, and discuss any caveats or issues you discovered working with this data.
+
+```{r}
+# Load required data
+
+la_payouts <- read.csv("data/la_city_legal_payouts.csv")
+View(la_payouts)
+
+# Clean required data and prepare for analysis if needed.
+
+la_payouts <- la_payouts %>% mutate(AMOUNT=as.numeric(parse_number(AMOUNT)))
+
+
+
+```
+
+## Sentences to Engineer
+In this notebook, we are reverse engineering five sentences from the story.
+
+### Sentence 1
+
+**Sentence text**: “Last budget year, the total for all types of payouts reached $201 million — the highest on record — but city officials are unsure whether that is the largest amount because records go back only two decades.”
+
+**General steps to reverse engineer**:
+1. Downloaded an excel sheet of all LA City Payouts between 2006-2018 from LA Times Github, deleted extraneous titles that could get in the way when converted to .csv.
+2. Converted the file to a .csv.
+3. Removed the /$ from the amount field.
+4. Converted the amount field to a numeric datatype.
+5. Grouped cases by year, summarized total payout amounts for each year.
+6. Arranged the results by the greatest total.
+
+
+**Analysis summary**: The results of our analysis confirm what the LA Times reported. According to the results of our reverse engineering, Los Angeles' total for all types of payouts was more than $201 million, which is the highest it's ever been.
+
+```{r}
+# Put code to reverse engineer sentence here
+#sum payouts for 2018
+
+la_payouts%>%
+  group_by(Year)%>%
+    summarize(
+    count = n(),
+    total = sum(AMOUNT)) %>%
+  arrange(desc(total))
+
+
+# Display results of code below this codeblock
+
+```
+
+### Sentence 2
+
+**Sentence text**: “Thousands of legal battles involving the Los Angeles Police Department, including a rash of recent settlements over police shootings and wrongful imprisonment, have added up to more than 40% of the total — a higher sum than any other city department, the analysis showed. That includes more than $24 million paid to two men who were freed after decades in prison, along with lawsuits over arrests, injuries, car crashes and alleged retaliation and discrimination against its own employees.”
+
+**General steps to reverse engineer**:
+To determine that the L.A. Police Department has accounted for 40% of the total L.A. cash settlements, we must:
+  a. Determine the total settlement amounts for every department.
+  b. Determine the total settlement amount for all of L.A.
+1. We start by grouping the settlement amounts by 'DEPARTMENT' and organizing them in descending order.
+2. We then determine the total settlement amount by summarizing all amounts greater than 0.
+3. Lastly, we create a new column that accounts for percentage share of each department (through dividing the department's aggregate by the total settlement amount)
+To determine whether the police department paid more than $24 million to two men who were wrongly imprisoned, we must:
+  a. Determine which cases from the police department relate to someone being wrongly imprisoned.
+  b. Determine how much the police department paid in those cases.
+1. We started by filtering all the payout cases for just ones from the police department and where case type was "Police - False Arrest/Detention/Imprisonment.
+2. We then arrange the cases in descending order.
+3. Then, we added the first two rows to get $25 million.
+
+
+**Analysis summary**: Our results show thousands of legal cases involving the police department have added up to 42.26% of LA's total payout costs, which matches what the LA Times found. We also found that the police department paid $25 million to two people with a case type of "Police - False Arrest/Detention/Imprisonment," which matches what the LA Times found.
+
+```{r}
+# Put code to reverse engineer sentence here
+la_payouts_departments<-la_payouts%>%
+  group_by(DEPARTMENT)%>%
+    summarize(
+    case_count = n(),
+    total_amount = sum(AMOUNT)) %>%
+  arrange(desc(total_amount))
+
+la_payouts%>%
+  filter(AMOUNT > 0) %>% 
+  summarize(
+    total_amount_of_all_cases = sum(AMOUNT))
+
+la_payouts_pct_share <- la_payouts_departments%>%
+  mutate(pct_share =(total_amount/886979072)*100)
+
+
+la_payouts_wrong_imprisonment <- la_payouts %>% 
+  filter(DEPARTMENT=="Police Department" & CASE.TYPE == "Police - False Arrest/Detention/Imprisonment") %>%
+  summarise(
+    AMOUNT
+  ) %>% 
+  arrange(desc(AMOUNT))
+
+first_two_cases_wrong_imprisonment <- la_payouts_wrong_imprisonment %>% 
+  summarise(
+    AMOUNT[1] + AMOUNT[2]
+    )
+
+
+# Display results of code below this codeblock
+first_two_cases_wrong_imprisonment
+la_payouts_pct_share
+```
+
+### Sentence 3
+
+* **Sentence text**: “Lawsuits tied to the city departments that oversee its streets and sidewalks, including the Bureau of Street Services and the Department of Transportation, accounted for a growing share. Legal payouts for “dangerous conditions” have rivaled and, last budget year, even exceeded the cost of lawsuits over police misconduct, the analysis found. In May, the city attorney’s office warned that there had been “unprecedented growth” in such payouts.”
+
+
+* **General steps to reverse engineer**:
+1. For this sentence, we must determine whether L.A. payouts for "dangerous conditions" accounted for more costs than the L.A. Police Department in 2018.
+2. To do so, we filter all cases by year (2018) and with the Case.Type description of "dangerous conditions."
+3. Next, we summarize the total amount of settlements that meet those conditions.
+4. Lastly, we do the same process for 2018 L.A. Police Department cases and compare the totals of each data frame.
+
+* **Analysis summary**:After doing steps 2 and 3 we see that we get a case count of 321 for a total of $30,864,939. Then after doing the same process for 2018 LA Police Department Cases we get a count of 124 for a total of $19,162,284, showing that LA Payouts for "Dangerous conditions did in fact account for more costs as stated in the text.
+```{r}
+# Put code to reverse engineer sentence here
+la_payouts%>%
+  filter(Year == 2018, (str_detect(CASE.TYPE, 'Dangerous Condition')))%>%
+    summarize(
+    count = n(),
+    total = sum(AMOUNT)) %>%
+  arrange(desc(total))
+
+la_payouts%>%
+  filter(Year == 2018 , DEPARTMENT == 'Police Department')%>%
+    summarize(
+    count = n(),
+    total = sum(AMOUNT))%>%
+        arrange(desc(total))
+
+
+# Display results of code below this codeblock
+
+```
+
+### Sentence 4
+
+* **Sentence text**: Many cases have arisen from people being wounded or killed while crossing city streets: In recent years, the city agreed to pay 15 million dollars to end a legal battle over a man who was gravely injured while crossing Franklin Avenue in Hollywood, another 15 million dollars to the family of two girls hit in a North Hollywood crosswalk and $9.5 million to the family of a teenage girl fatally struck by a taxi near Dockweiler State Beach.
+
+
+* **General steps to reverse engineer**:
+1. To certify what the story claims, we need to identify the traffic cases that resulted in these settlements and the amount paid.
+2. We did so by filtering cases by the Department of Transportation OR a CASE.TYPE of "Traffic." 
+3. Next we organized the filtered data by payout amount, descending. 
+
+
+* **Analysis summary**: We were able to find the two 15 million dollar cases but not the 9.5 million one. I am not sure which other parameters could be added to receive the same results as the LA Times reporters, as these are all of the variables that I noticed that retrieve traffic related cases. When looking into their Github notebook, I did not find any other insights. 
+
+```{r}
+# Put code to reverse engineer sentence here
+la_payouts_traffic <- la_payouts%>%
+  filter(DEPARTMENT == 'Department of Transportation' | (str_detect(CASE.TYPE, 'Traffic')) | DEPARTMENT == 'DEPARTMENT OF TRANSPORTATION')%>%
+  arrange(desc(AMOUNT))
+
+# Display results of code below this codeblock
+la_payouts_traffic
+
+```
+
+### Sentence 5
+
+* **Sentence text**: “Beyond the mammoth cases, a pileup of other large payouts has padded the tab, a Times analysis of city payouts found. While the total number of payouts has dipped over time, the average amount has increased. Last budget year, the city paid out 30 settlements of $1 million or more — five times as many as a decade before.”
+
+* **General steps to reverse engineer**:
+To determine if the total number of payouts has decreased over time:
+1. create a tibble that groups the data by year and counts each case
+2. create a line chart using year as the x axis and total payouts (the count) as the y axis
+To determine if the average amount of payouts has increased over time:
+1. create a tibble that groups by year and calculates the average amount of payouts
+2. create a line chart that uses year as the x axis and average amount of payouts as the y axis
+To determine if the city paid five times as many $1 million+ settlements in 2017 as in 2007:
+1. create a tibble that filters cases for only the year 2017 and only with amounts greater than or equal to $1 million
+2. create a tibble that filters cases for only the year 2007 and only with amounts greater than or equalto $1 million
+
+
+* **Analysis summary**: The two line charts confirm that the number of payouts has decreased over time, but the average amount has increased over time. My tables show that the city payed 8 settlements of \$1 million or more in 2007 and 30 settlements of \$1 million or more in 2017. That would disprove that there were five times as many \$1million+ settlements in 2017 as in the decade before.
+
+```{r}
+# Put code to reverse engineer sentence here
+la_payouts_by_date <- la_payouts %>%
+  group_by(Year) %>%
+  summarise(
+    total_payouts=n()
+  )
+
+la_payouts_lines <- la_payouts_by_date %>%
+  ggplot() + 
+  geom_line(aes(x=Year, y=total_payouts)) +
+  labs(
+    title="Total number of payouts in LA by year\n"
+  )
+
+la_payouts_average_by_date <- la_payouts %>% 
+  group_by(Year) %>% 
+  summarise(
+    total_payouts = n(),
+    average_payouts = sum(AMOUNT)/total_payouts
+  )
+
+la_payouts_average_lines <- la_payouts_average_by_date %>% 
+  ggplot() + 
+  geom_line(aes(x=Year, y=average_payouts)) +
+  labs(
+    title="Average payouts in LA by year\n"
+  )
+
+# Display results of code below this codeblock
+la_payouts_lines
+la_payouts_average_lines
+```
+
+```{r}
+million_dollar_payouts_2017 <- la_payouts %>% 
+  filter(Year == 2017 & AMOUNT >= 1000000)
+
+million_dollar_payouts_2007 <- la_payouts %>% 
+  filter(Year == 2007 & AMOUNT >= 1000000)
+
+# Display results of code below this codeblock
+million_dollar_payouts_2017
+million_dollar_payouts_2007
+```
+
+-30-

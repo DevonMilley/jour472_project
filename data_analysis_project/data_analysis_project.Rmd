@@ -1,6 +1,6 @@
 ---
 title: "Data Analysis Project"
-author: "Student names here"
+author: "Devon Milley, Timothy Dashiell, Emmett Gartner"
 date: "Date here"
 output:
   html_document:
@@ -25,10 +25,10 @@ In this notebook, we are analyzing this data, The Lasting Legacy Of Redlining.
 Loading required libraries for this analysis.
 
 ```{r echo=FALSE, message=FALSE}
-
-metro_grades<-st_read("https://raw.githubusercontent.com/fivethirtyeight/data/master/redlining/metro-grades.csv")
-
-zone_block_matches<-st_read("https://raw.githubusercontent.com/fivethirtyeight/data/master/redlining/zone-block-matches.csv")
+library(tidyverse)
+library(sf)
+library(janitor)
+library(lubridate)
 
 ```
 
@@ -39,7 +39,9 @@ In this section, describe the source of the data, write a basic data dictionary 
 ```{r}
 # Load required data
 
+metro_grades<-read_csv("data/metro-grades.csv")
 
+zone_block_matches<-st_read("data/zone-block-matches.csv")
 
 # Path to data should be loaded from folder "data" i.e. read_csv("data/name_of_data.csv")
 

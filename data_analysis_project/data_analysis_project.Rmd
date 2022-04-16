@@ -20,6 +20,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 In this notebook, we are analyzing this data, The Lasting Legacy Of Redlining.
 
+## Variable explanations
+HOLC Grades
+One of the principal variables in this dataset is the Home Owners’ Loan Corporation (HOLC) grade. HOLC was a New Deal-era federal agency that collaborated with local banks, cities, and real estate appraisers to rate the “quality” of neighborhoods on a scale of A-D, with ‘A’ being the best and ‘D’ the worst. The variables used to determine these grades included objective indicators like access to amenities, i.e. parks and transportation, and biased variables based on the economic class and race of residents. HOLC grades were then used to determine a homeowner’s qualifications for a mortgage — homeowners in ‘D’ neighborhoods were less likely to receive friendly mortgages and reduced the value of their homes. The long-term impacts of HOLC grades included a drain of wealth from neighborhoods with unfavorable grades. 
+HOLC grades will be used as a backdrop for the other variables in our dataset. They will show how neighborhoods with poor grades rebounded over the past eight decades and what influence, if any, those grades have on a neighborhood's demographics and median income levels.
+Demographic Data
+Accompanying the HOLC grades in FiveThirtyEight’s dataset are modern demographic data that show the racial makeup of HOLC neighborhoods and surrounding areas. This includes base-data like total populations, as well as the percentage of a total population each demographic makes up. This will hasten analysis as some of our variables are pre-calculated.
+
+zone-block-matches.csv
+The other .csv file in this dataset is the product of FiveThirtyEight journalists matching old HOLC grades/neighborhoods with modern census blocks, then deriving census data and populating census geometry with it.
+
+
 ## Load libraries
 
 Loading required libraries for this analysis.

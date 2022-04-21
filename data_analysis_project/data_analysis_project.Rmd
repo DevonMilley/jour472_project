@@ -63,7 +63,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ### Sentence 1
 
-* **Sentence text**: How has the race makeup changed in areas that were redlined from the time the practice occurred to current day?
+* **Sentence text**: For each Holc grade, what is the racial composition?
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
@@ -75,7 +75,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ### Sentence 2
 
-* **Sentence text**: Which areas had better HOLC grades? (urban, suburban, rural, etc.)
+* **Sentence text**: What is the Holc grade breakdown by state? -- need to create a state column
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
@@ -87,12 +87,47 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ### Sentence 3
 
-* **Sentence text**: What similarities exist amongst formerly redlined neighborhoods that now have diverse populations and higher home values?
+* **Sentence text**: For metro areas with at least 50% of a particular race, how many As, Bs, Cs, Ds are there?
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
+holc_count_white <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_white > 20) %>% 
+  summarise(
+    majority_white_neighborhoods_count = n()
+  )
 
+holc_count_black <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_black > 20) %>% 
+  summarise(
+    majority_black_neighborhoods_count = n()
+  )
+
+holc_count_hispanic  <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_hisp > 20) %>% 
+  summarise(
+    majority_hisp_neighborhoods_count = n()
+  )
+
+holc_count_asian  <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_asian > 20) %>% 
+  summarise(
+    majority_asian_neighborhoods_count = n()
+  )
+
+holc_count_other  <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_other > 20) %>% 
+  summarise(
+    majority_other_neighborhoods_count = n()
+  )
+
+holc_grades_by_race <- holc_count_white %>% inner_join(holc_count_black, by=c("holc_grade")) %>%  inner_join(holc_count_hispanic, by=c("holc_grade")) %>%  inner_join(holc_count_asian, by=c("holc_grade")) %>% inner_join(holc_count_other, by=c("holc_grade"))
 # Display results of code below this codeblock
 
 ```

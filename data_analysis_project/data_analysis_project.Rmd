@@ -16,9 +16,20 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Introduction 
+## Introduction
 
 In this notebook, we are analyzing this data, The Lasting Legacy Of Redlining.
+
+## Variable explanations
+HOLC Grades
+One of the principal variables in this dataset is the Home Owners’ Loan Corporation (HOLC) grade. HOLC was a New Deal-era federal agency that collaborated with local banks, cities, and real estate appraisers to rate the “quality” of neighborhoods on a scale of A-D, with ‘A’ being the best and ‘D’ the worst. The variables used to determine these grades included objective indicators like access to amenities, i.e. parks and transportation, and biased variables based on the economic class and race of residents. HOLC grades were then used to determine a homeowner’s qualifications for a mortgage — homeowners in ‘D’ neighborhoods were less likely to receive friendly mortgages and reduced the value of their homes. The long-term impacts of HOLC grades included a drain of wealth from neighborhoods with unfavorable grades.
+HOLC grades will be used as a backdrop for the other variables in our dataset. They will show how neighborhoods with poor grades rebounded over the past eight decades and what influence, if any, those grades have on a neighborhood's demographics and median income levels.
+Demographic Data
+Accompanying the HOLC grades in FiveThirtyEight’s dataset are modern demographic data that show the racial makeup of HOLC neighborhoods and surrounding areas. This includes base-data like total populations, as well as the percentage of a total population each demographic makes up. This will hasten analysis as some of our variables are pre-calculated.
+
+zone-block-matches.csv
+The other .csv file in this dataset is the product of FiveThirtyEight journalists matching old HOLC grades/neighborhoods with modern census blocks, then deriving census data and populating census geometry with it.
+
 
 ## Load libraries
 
@@ -34,7 +45,9 @@ library(lubridate)
 
 ## Load and Cleaning Data
 
-In this section, describe the source of the data, write a basic data dictionary for data you are working with, and discuss any caveats or issues you discovered working with this data. 
+In this section, describe the source of the data, write a basic data dictionary for data you are working with, and discuss any caveats or issues you discovered working with this data.
+
+There are 551 rows and 28 columns in the dataset.
 
 ```{r}
 # Load required data
@@ -45,7 +58,61 @@ zone_block_matches<-st_read("data/zone-block-matches.csv")
 
 ```
 
-## Inventory of data and explaination of variables
+## Sentences to Engineer
+In this notebook, we are reverse engineering five sentences from the story.
+
+### Sentence 1
+
+* **Sentence text**: How has the race makeup changed in areas that were redlined from the time the practice occurred to current day?
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+
+```{r}
+# Put code to reverse engineer sentence here
+
+# Display results of code below this codeblock
+
+```
+
+### Sentence 2
+
+* **Sentence text**: Which areas had better HOLC grades? (urban, suburban, rural, etc.)
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+
+```{r}
+# Put code to reverse engineer sentence here
+
+# Display results of code below this codeblock
+
+```
+
+### Sentence 3
+
+* **Sentence text**: What similarities exist amongst formerly redlined neighborhoods that now have diverse populations and higher home values?
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+
+```{r}
+# Put code to reverse engineer sentence here
+
+# Display results of code below this codeblock
+
+```
+
+### Sentence 4
+
+* **Sentence text**: [Paste in sentence to engineer here]
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+
+```{r}
+# Put code to reverse engineer sentence here
+
+# Display results of code below this codeblock
+
+```
+
+### Sentence 5
+
+* **Sentence text**: [Paste in sentence to engineer here]
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 

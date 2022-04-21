@@ -43,11 +43,6 @@ metro_grades<-read_csv("data/metro-grades.csv")
 
 zone_block_matches<-st_read("data/zone-block-matches.csv")
 
-# Path to data should be loaded from folder "data" i.e. read_csv("data/name_of_data.csv")
-
-# Clean required data and prepare for analysis if needed. 
-
-
 ```
 
 ## Inventory of data and explaination of variables

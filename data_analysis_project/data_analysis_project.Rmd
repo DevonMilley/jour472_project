@@ -69,6 +69,17 @@ In this notebook, we are reverse engineering five sentences from the story.
 ```{r}
 # Put code to reverse engineer sentence here
 
+holc_grades_race <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  summarise(
+    pct_white,
+    pct_black,
+    pct_hisp,
+    pct_asian,
+    pct_other)
+
+
+
 # Display results of code below this codeblock
 
 ```
@@ -80,6 +91,19 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ```{r}
 # Put code to reverse engineer sentence here
+
+metro_grades_plus_state <- metro_grades %>% 
+  mutate(
+    state=str_sub(metro_area, start=-2, end=-1)
+  )
+
+holc_by_state <- metro_grades_plus_state %>% 
+  group_by(holc_grade, state) %>% 
+  summarise(
+    count=n()
+  ) %>% 
+  arrange(state)
+
 
 # Display results of code below this codeblock
 
@@ -93,13 +117,20 @@ In this notebook, we are reverse engineering five sentences from the story.
 ```{r}
 # lets do quartiles of percentages !!!, also consider plurality, not just majority
 # Put code to reverse engineer sentence here
-holc_count_white <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_white > 20) %>% 
-  summarise(
-    majority_white_neighborhoods_count = n()
-  )
+# could do something like this but idk why it's not working. may just have to do four tables (filtering on each quartile) for each race and jion them together to get what we want. i just feel like there's a more efficient way to do that - Devon
 
+holc_count_white <- metro_grades %>% 
+  mutate(
+  white_neighborhoods_count = case_when(
+    (pct_white %in% c(0:25)) == TRUE ~ "0-25% white neighborhood",
+    (pct_white %in% c(25.01:50)) == TRUE ~ "25-50% white neighborhood",
+    (pct_white %in% c(50.01:75)) == TRUE ~ "50-75% white neighborhood",
+    (pct_white %in% c(75.01:100)) == TRUE ~ "75-100% white neighborhood")) %>% 
+  group_by(white_neighborhoods_count) %>% 
+  summarise(
+    count = n()
+  )
+```
 holc_count_black <- metro_grades %>% 
   group_by(holc_grade) %>% 
   filter(pct_black > 20) %>% 

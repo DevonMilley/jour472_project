@@ -87,7 +87,7 @@ holc_grades_race <- metro_grades %>%
 ### Sentence 2
 
 * **Sentence text**: What is the Holc grade breakdown by state? -- need to create a state column
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Analysis summary**: 
 
 ```{r}
 # Put code to reverse engineer sentence here
@@ -97,13 +97,23 @@ metro_grades_plus_state <- metro_grades %>%
     state=str_sub(metro_area, start=-2, end=-1)
   )
 
-holc_by_state <- metro_grades_plus_state %>% 
-  group_by(holc_grade, state) %>% 
+holc_by_state <- metro_grades_plus_state %>%
+  group_by(state) %>% 
   summarise(
-    count=n()
-  ) %>% 
-  arrange(state)
-
+    a_count = sum(holc_grade == "A"),
+    b_count = sum(holc_grade == "B"),
+    c_count = sum(holc_grade == "C"),
+    d_count = sum(holc_grade == "D")
+  )
+```  
+  
+  
+  summarise( grades = case_when(
+   holc_grade == "A" ~ "A",
+   holc_grade == "B" ~ "B",
+   holc_grade == "C" ~ "C",
+   holc_grade == "D" ~ "D")) %>% 
+  group_by(grades)
 
 # Display results of code below this codeblock
 

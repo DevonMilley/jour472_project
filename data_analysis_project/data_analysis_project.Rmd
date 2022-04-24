@@ -117,19 +117,22 @@ holc_by_state <- metro_grades_plus_state %>%
 
 # Display results of code below this codeblock
 
-```
 
-### Sentence 3
+ Sentence 3
 
 * **Sentence text**: For metro areas with at least 50% of a particular race, how many As, Bs, Cs, Ds are there?
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Analysis summary**: So, we have pivoted quite a bit from this initial question, and instead tried to determine quartiles of percentages for each race's population share but encountered some difficulties. We then went back to our old method and created a master dataframe that counts the grades when a race's population share is greater than a certain percentage. We went with 5, 10, 15 and 20, because those numbers bring back the most results without excluding any races. Unfortunately, since there are no results for a HOLC grade of "A" when pct_asian is >20%, and I could not figure out how to include the A count anyways, I had to remove that summation — otherwise it would remove the "A" row in the master dataframe.
+
+We also created a diverse neighborhoods dataframe that looked for similar counts, except when all races meet a certain percentage threshold, i.e. >3%, 4%, 5%, etc. I think that this dataframe shows the most promise in this analysis section, but we'd like to figure out a way to bring back more results and perhaps structure a new dataframe that shows combinations of two races greater than a percentage threshold in an effective and concise way.
+
+Overall, what this data reveals is that when larger percentage caps are put on white neighborhoods, such as >15% and >20%, the number of C and D grades decrease while the A and B grades remain relatively constant, where as the opposite is true for black neighborhoods — C and D grades increase while A and B grades decrease substantially.
 
 ```{r}
-# lets do quartiles of percentages !!!, also consider plurality, not just majority
-# Put code to reverse engineer sentence here
-# could do something like this but idk why it's not working. may just have to do four tables (filtering on each quartile) for each race and jion them together to get what we want. i just feel like there's a more efficient way to do that - Devon
+#lets do quartiles of percentages !!!, also consider plurality, not just majority
+#Put code to reverse engineer sentence here
+#could do something like this but idk why it's not working. may just have to do four tables (filtering on each quartile) for each race and join them together to get what we want. i just feel like there's a more efficient way to do that - Devon
 
-holc_count_white <- metro_grades %>% 
+holc_count_white_neighborhoods <- metro_grades %>% 
   mutate(
   white_neighborhoods_count = case_when(
     (pct_white %in% c(0:25)) == TRUE ~ "0-25% white neighborhood",
@@ -141,35 +144,195 @@ holc_count_white <- metro_grades %>%
     count = n()
   )
 ```
+
+```{r}
+#holc grades with pct >20 per race
+
 holc_count_black <- metro_grades %>% 
   group_by(holc_grade) %>% 
   filter(pct_black > 20) %>% 
   summarise(
-    majority_black_neighborhoods_count = n()
+    twenty_pct_black_neighborhoods_count = n()
   )
 
 holc_count_hispanic  <- metro_grades %>% 
   group_by(holc_grade) %>% 
   filter(pct_hisp > 20) %>% 
   summarise(
-    majority_hisp_neighborhoods_count = n()
+    twenty_pct_hisp_neighborhoods_count = n()
+  )
+
+
+holc_count_white  <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_white > 20) %>% 
+  summarise(
+    twenty_pct_white_neighborhoods_count = n()
+  )
+
+holc_grades_twenty <- holc_count_white %>% inner_join(holc_count_black, by=c("holc_grade"))
+
+holc_grades_twenty <-holc_grades_twenty%>%inner_join(holc_count_hispanic, by=c("holc_grade"))
+
+#holc grades with pct >15 per race
+
+holc_count_black <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_black > 15) %>% 
+  summarise(
+    fifteen_pct_black_neighborhoods_count = n()
+  )
+
+holc_count_hispanic  <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_hisp > 15) %>% 
+  summarise(
+    fifteen_pct_hisp_neighborhoods_count = n()
   )
 
 holc_count_asian  <- metro_grades %>% 
   group_by(holc_grade) %>% 
-  filter(pct_asian > 20) %>% 
+  filter(pct_asian > 15) %>% 
   summarise(
-    majority_asian_neighborhoods_count = n()
+    fifteen_pct_asian_neighborhoods_count = n()
   )
 
-holc_count_other  <- metro_grades %>% 
+holc_count_white  <- metro_grades %>% 
   group_by(holc_grade) %>% 
-  filter(pct_other > 20) %>% 
+  filter(pct_white > 15) %>% 
   summarise(
-    majority_other_neighborhoods_count = n()
+    fifteen_pct_white_neighborhoods_count = n()
   )
 
-holc_grades_by_race <- holc_count_white %>% inner_join(holc_count_black, by=c("holc_grade")) %>%  inner_join(holc_count_hispanic, by=c("holc_grade")) %>%  inner_join(holc_count_asian, by=c("holc_grade")) %>% inner_join(holc_count_other, by=c("holc_grade"))
+#holc grades with pct >15 per race
+holc_grades_fifteen <- holc_count_white %>% inner_join(holc_count_black, by=c("holc_grade"))
+
+holc_grades_fifteen <-holc_grades_fifteen%>%inner_join(holc_count_asian, by=c("holc_grade"))
+
+holc_grades_fifteen <-holc_grades_fifteen%>%inner_join(holc_count_hispanic, by=c("holc_grade"))
+
+holc_grades_pct <- holc_grades_fifteen%>%inner_join(holc_grades_twenty, by=c("holc_grade"))
+
+#holc grades with pct >10 per race
+
+holc_count_black <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_black > 10) %>% 
+  summarise(
+    ten_pct_black_neighborhoods_count = n()
+  )
+
+holc_count_hispanic  <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_hisp > 10) %>% 
+  summarise(
+    ten_pct_hisp_neighborhoods_count = n()
+  )
+
+holc_count_asian  <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_asian > 10) %>% 
+  summarise(
+    ten_pct_asian_neighborhoods_count = n()
+  )
+
+holc_count_white  <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_white > 10) %>% 
+  summarise(
+    ten_pct_white_neighborhoods_count = n()
+  )
+
+holc_grades_ten <- holc_count_white %>% inner_join(holc_count_black, by=c("holc_grade"))
+
+holc_grades_ten <-holc_grades_ten%>%inner_join(holc_count_asian, by=c("holc_grade"))
+
+holc_grades_ten <-holc_grades_ten%>%inner_join(holc_count_hispanic, by=c("holc_grade"))
+
+holc_grades_pct <-holc_grades_ten%>%inner_join(holc_grades_pct, by=c("holc_grade"))
+
+
+#holc grades with pct >5 per race
+
+holc_count_black <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_black > 5) %>% 
+  summarise(
+    five_pct_black_neighborhoods_count = n()
+  )
+
+holc_count_hispanic  <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_hisp > 5) %>% 
+  summarise(
+    five_pct_hisp_neighborhoods_count = n()
+  )
+
+holc_count_asian  <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_asian > 5) %>% 
+  summarise(
+    five_pct_asian_neighborhoods_count = n()
+  )
+
+holc_count_white  <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_white > 5) %>% 
+  summarise(
+    five_pct_white_neighborhoods_count = n()
+  )
+
+holc_grades_five <- holc_count_white %>% inner_join(holc_count_black, by=c("holc_grade"))
+
+holc_grades_five <-holc_grades_five%>%inner_join(holc_count_asian, by=c("holc_grade"))
+
+holc_grades_five <-holc_grades_five%>%inner_join(holc_count_hispanic, by=c("holc_grade"))
+
+holc_grades_pct <-holc_grades_five%>%inner_join(holc_grades_pct, by=c("holc_grade"))
+
+
+```
+
+```{r}
+holc_three <-metro_grades%>%
+  group_by(holc_grade)%>%
+  filter(pct_asian >3, pct_black > 3, pct_white>3, pct_hisp>3)%>%
+  summarise(
+    neighborhoods_greater_than_three_pct_each_race=n()
+  )
+
+
+holc_four <-metro_grades%>%
+  group_by(holc_grade)%>%
+  filter(pct_asian >4, pct_black > 4, pct_white>4, pct_hisp>4)%>%
+  summarise(
+    neighborhoods_greater_than_four_pct_each_race=n()
+  )
+
+holc_five <-metro_grades%>%
+  group_by(holc_grade)%>%
+  filter(pct_asian >5, pct_black > 5, pct_white>5, pct_hisp>5)%>%
+  summarise(
+    neighborhoods_greater_than_five_pct_each_race=n()
+  )
+
+holc_six<-metro_grades%>%
+  group_by(holc_grade)%>%
+  filter(pct_asian >6, pct_black > 6, pct_white>6, pct_hisp>6)%>%
+  summarise(
+    neighborhoods_greater_than_six_pct_each_race=n()
+  )
+
+holc_diverse_neighborhoods <- holc_three %>% inner_join(holc_four, by=c("holc_grade"))
+
+holc_diverse_neighborhoods <- holc_diverse_neighborhoods %>% inner_join(holc_five, by=c("holc_grade"))
+
+holc_diverse_neighborhoods <- holc_diverse_neighborhoods %>% inner_join(holc_six, by=c("holc_grade"))
+
+
+
+```
+
 # Display results of code below this codeblock
 
 ```

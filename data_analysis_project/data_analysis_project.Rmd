@@ -88,6 +88,8 @@ holc_grades_race <- metro_grades %>%
 
 * **Sentence text**: What is the Holc grade breakdown by state? -- need to create a state column
 * **Analysis summary**: 
+This process made us realize that our dataset aggregates the A, B, C, and D HOLC grades for each city then summarizes the demographic data for each grade. Thus, when we went to summarize HOLC grades by state, we found that the grade counts were consistent across all columns. Our discovery leads us to a new line of inquiry, however. Next week, we can analyze each state's data in a way similar to the process in Sentence 1 and summarize the mean demographic percentages for each state's A, B, C, and D grades.
+
 
 ```{r}
 # Put code to reverse engineer sentence here
@@ -333,9 +335,6 @@ holc_diverse_neighborhoods <- holc_diverse_neighborhoods %>% inner_join(holc_six
 
 ```
 
-# Display results of code below this codeblock
-
-```
 
 ### Sentence 4
 

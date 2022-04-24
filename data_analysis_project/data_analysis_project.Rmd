@@ -72,11 +72,11 @@ In this notebook, we are reverse engineering five sentences from the story.
 holc_grades_race <- metro_grades %>% 
   group_by(holc_grade) %>% 
   summarise(
-    pct_white,
-    pct_black,
-    pct_hisp,
-    pct_asian,
-    pct_other)
+    pct_white = mean(pct_white),
+    pct_black = mean(pct_black),
+    pct_hisp = mean(pct_hisp),
+    pct_asian = mean(pct_asian),
+    pct_other = mean(pct_other))
 
 
 

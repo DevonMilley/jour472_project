@@ -64,7 +64,10 @@ In this notebook, we are reverse engineering five sentences from the story.
 ### Sentence 1
 
 * **Sentence text**: For each Holc grade, what is the racial composition?
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Analysis summary**: Our analysis of this question is the most effective of the three, and its findings will be helpful in guiding the rest of our project. To answer it, we grouped by holc_grade then summarised the mean percentage populations of each race in accordance with HOLC letter grades. The results showed more diversity than we anticipated in the 'A' HOLC grade (we expected very little, following the bias history that created the grading criteria), with the average white percentage at 73.78 percent and average Black and Hispanic percentages hovering just under 9 percent. Aside from the percent white mean, other averages grew larger and subsequently more diverse as the HOLC letter grade decreased.
+
+As we note in the next section, we'd like to try and use this method to see how mean race percentages change from state to state. This will be the start of the geographic analysis we hope to heavily explore.
+
 
 ```{r}
 # Put code to reverse engineer sentence here
@@ -88,6 +91,7 @@ holc_grades_race <- metro_grades %>%
 
 * **Sentence text**: What is the Holc grade breakdown by state? -- need to create a state column
 * **Analysis summary**: 
+
 This process made us realize that our dataset aggregates the A, B, C, and D HOLC grades for each city then summarizes the demographic data for each grade. Thus, when we went to summarize HOLC grades by state, we found that the grade counts were consistent across all columns. Our discovery leads us to a new line of inquiry, however. Next week, we can analyze each state's data in a way similar to the process in Sentence 1 and summarize the mean demographic percentages for each state's A, B, C, and D grades.
 
 

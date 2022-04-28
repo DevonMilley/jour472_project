@@ -40,6 +40,7 @@ library(tidyverse)
 library(sf)
 library(janitor)
 library(lubridate)
+library(dplyr)
 
 ```
 
@@ -71,6 +72,8 @@ As we note in the next section, we'd like to try and use this method to see how 
 
 ```{r}
 # Put code to reverse engineer sentence here
+
+#we should compare national to regional, national to state ?
 
 holc_grades_race <- metro_grades %>% 
   group_by(holc_grade) %>% 
@@ -141,15 +144,32 @@ Overall, what this data reveals is that when larger percentage caps are put on w
 holc_count_white_neighborhoods <- metro_grades %>% 
   mutate(
   white_neighborhoods_count = case_when(
-    (pct_white %in% c(0:25)) == TRUE ~ "0-25% white neighborhood",
-    (pct_white %in% c(25.01:50)) == TRUE ~ "25-50% white neighborhood",
-    (pct_white %in% c(50.01:75)) == TRUE ~ "50-75% white neighborhood",
-    (pct_white %in% c(75.01:100)) == TRUE ~ "75-100% white neighborhood")) %>% 
-  group_by(white_neighborhoods_count) %>% 
+    (pct_white %in% c(0.00:25.00)) == TRUE ~ "0-25% white neighborhood",
+    (pct_white %in% c(25.01:50.00)) == TRUE ~ "25-50% white neighborhood",
+    (pct_white %in% c(50.01:75.00)) == TRUE ~ "50-75% white neighborhood",
+    (pct_white %in% c(75.01:100.00)) == TRUE ~ "75-100% white neighborhood"))
+ # group_by(white_neighborhoods_count) %>% 
+  #summarise(
+   # count = n()
+  #)
+```
+
+```{r}
+#this is blaaaah
+q = c(.1, .2, .3, .4)
+
+holc_count_white_neighborhoods <- metro_grades %>% 
+  group_by(holc_grade) %>% 
   summarise(
-    count = n()
+    white_ten = quantile(pct_white, probs=q[1]),
+    white_twenty = quantile(pct_white, probs=q[2]),
+    white_thirty = quantile(pct_white, probs=q[3]),
+    white_forty = quantile(pct_white, probs=q[4])
   )
 ```
+
+
+
 
 ```{r}
 #holc grades with pct >20 per race
@@ -348,6 +368,15 @@ holc_diverse_neighborhoods <- holc_diverse_neighborhoods %>% inner_join(holc_six
 ```{r}
 # Put code to reverse engineer sentence here
 
+holc_grades_race_state <- metro_grades_plus_state %>% 
+  group_by(holc_grade, state) %>% 
+  summarise(
+    pct_white = mean(pct_white),
+    pct_black = mean(pct_black),
+    pct_hisp = mean(pct_hisp),
+    pct_asian = mean(pct_asian),
+    pct_other = mean(pct_other))
+
 # Display results of code below this codeblock
 
 ```
@@ -359,7 +388,34 @@ holc_diverse_neighborhoods <- holc_diverse_neighborhoods %>% inner_join(holc_six
 
 ```{r}
 
-
+metro_grades_w_region <- metro_grades_plus_state %>% 
+  mutate(
+    region = case_when(
+      (state %in% c("CA", "OR", "WA", "AK", "HI")) == TRUE ~ "Pacific West",
+      (state %in% c("ID", "MT", "WY", "NV", "UT", "CO", "AZ", "NM")) == TRUE ~ "Mountain West",
+      (state %in% c("TX", "OK", "AR", "LA")) == TRUE ~ "West South Central",
+      (state %in% c("ND", "SD", "NE", "KS", "MN", "IA", "MO")) == TRUE ~ "West North Central",
+      (state %in% c("WI", "IL", "IN", "MI", "OH")) == TRUE ~ "East North Central",
+      (state %in% c("KY", "TN", "MS", "AL")) == TRUE ~ "East Soutch Central",
+      (state %in% c("DE", "DC", "FL", "GA", "SC", "NC", "WV", "VA", "MD")) == TRUE ~ "South Atlantic",
+      (state %in% c("CT", "ME", "MA", "VT", "NH", "RI")) == TRUE ~ "New England",
+      (state %in% c("NJ", "NY", "PA")) == TRUE ~ "Middle Atlantic"
+      
+    )
+  )
 ```
+
+
+```{r}
+holc_grades_race_region <- metro_grades_w_region %>% 
+  group_by(holc_grade, region) %>% 
+  summarise(
+    pct_white = mean(pct_white),
+    pct_black = mean(pct_black),
+    pct_hisp = mean(pct_hisp),
+    pct_asian = mean(pct_asian),
+    pct_other = mean(pct_other))
+```
+
 
 -30-

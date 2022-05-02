@@ -65,7 +65,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 ### Sentence 1
 
 * **Sentence text**: For each Holc grade, what is the racial composition?
-* **Analysis summary**: Our analysis of this question is the most effective of the three, and its findings will be helpful in guiding the rest of our project. To answer it, we grouped by holc_grade then summarised the mean percentage populations of each race in accordance with HOLC letter grades. The results showed more diversity than we anticipated in the 'A' HOLC grade (we expected very little, following the bias history that created the grading criteria), with the average white percentage at 73.78 percent and average Black and Hispanic percentages hovering just under 9 percent. Aside from the percent white mean, other averages grew larger and subsequently more diverse as the HOLC letter grade decreased.
+* **Analysis summary**: Our analysis of this question is the most effective of the three, and its findings will be helpful in guiding the rest of our project. To answer it, we grouped by holc_grade then summarised the mean percentage populations of each race in accordance with HOLC letter grades. We found that the majority of neighborhoods that received a HOLC grade of A had a high percent of white people. A grade neighborhoods only had about 8% Black and Hispanic populations each. Lower graded neighborhoods at the C and D level, had higher percents of Black and Hispanic populations, making up about 50% combined for D-level neighborhoods and 41% combined for C-level neighborhoods.  
 
 As we note in the next section, we'd like to try and use this method to see how mean race percentages change from state to state. This will be the start of the geographic analysis we hope to heavily explore.
 
@@ -363,7 +363,7 @@ holc_diverse_neighborhoods <- holc_diverse_neighborhoods %>% inner_join(holc_six
 ### Sentence 4
 
 * **Sentence text**: [Paste in sentence to engineer here]
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Analysis summary**: This code does pretty much the same thing as the code that looks at the racial breakdown of HOLC grades, but it also groups by state. When arranging the results by the white percent, we found that
 
 ```{r}
 # Put code to reverse engineer sentence here

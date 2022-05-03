@@ -115,16 +115,7 @@ holc_by_state <- metro_grades_plus_state %>%
     d_count = sum(holc_grade == "D")
   )
 ```  
-  
-  
-  summarise( grades = case_when(
-   holc_grade == "A" ~ "A",
-   holc_grade == "B" ~ "B",
-   holc_grade == "C" ~ "C",
-   holc_grade == "D" ~ "D")) %>% 
-  group_by(grades)
 
-# Display results of code below this codeblock
 
 
  Sentence 3
@@ -155,23 +146,6 @@ holc_count_white_neighborhoods <- metro_grades %>%
 ```
 
 ```{r}
-#this is blaaaah
-q = c(.1, .2, .3, .4)
-
-holc_count_white_neighborhoods <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  summarise(
-    white_ten = quantile(pct_white, probs=q[1]),
-    white_twenty = quantile(pct_white, probs=q[2]),
-    white_thirty = quantile(pct_white, probs=q[3]),
-    white_forty = quantile(pct_white, probs=q[4])
-  )
-```
-
-
-
-
-```{r}
 #holc grades with pct >20 per race
 
 holc_count_black <- metro_grades %>% 
@@ -199,164 +173,6 @@ holc_count_white  <- metro_grades %>%
 holc_grades_twenty <- holc_count_white %>% inner_join(holc_count_black, by=c("holc_grade"))
 
 holc_grades_twenty <-holc_grades_twenty%>%inner_join(holc_count_hispanic, by=c("holc_grade"))
-
-#holc grades with pct >15 per race
-
-holc_count_black <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_black > 15) %>% 
-  summarise(
-    fifteen_pct_black_neighborhoods_count = n()
-  )
-
-holc_count_hispanic  <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_hisp > 15) %>% 
-  summarise(
-    fifteen_pct_hisp_neighborhoods_count = n()
-  )
-
-holc_count_asian  <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_asian > 15) %>% 
-  summarise(
-    fifteen_pct_asian_neighborhoods_count = n()
-  )
-
-holc_count_white  <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_white > 15) %>% 
-  summarise(
-    fifteen_pct_white_neighborhoods_count = n()
-  )
-
-#holc grades with pct >15 per race
-holc_grades_fifteen <- holc_count_white %>% inner_join(holc_count_black, by=c("holc_grade"))
-
-holc_grades_fifteen <-holc_grades_fifteen%>%inner_join(holc_count_asian, by=c("holc_grade"))
-
-holc_grades_fifteen <-holc_grades_fifteen%>%inner_join(holc_count_hispanic, by=c("holc_grade"))
-
-holc_grades_pct <- holc_grades_fifteen%>%inner_join(holc_grades_twenty, by=c("holc_grade"))
-
-#holc grades with pct >10 per race
-
-holc_count_black <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_black > 10) %>% 
-  summarise(
-    ten_pct_black_neighborhoods_count = n()
-  )
-
-holc_count_hispanic  <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_hisp > 10) %>% 
-  summarise(
-    ten_pct_hisp_neighborhoods_count = n()
-  )
-
-holc_count_asian  <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_asian > 10) %>% 
-  summarise(
-    ten_pct_asian_neighborhoods_count = n()
-  )
-
-holc_count_white  <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_white > 10) %>% 
-  summarise(
-    ten_pct_white_neighborhoods_count = n()
-  )
-
-holc_grades_ten <- holc_count_white %>% inner_join(holc_count_black, by=c("holc_grade"))
-
-holc_grades_ten <-holc_grades_ten%>%inner_join(holc_count_asian, by=c("holc_grade"))
-
-holc_grades_ten <-holc_grades_ten%>%inner_join(holc_count_hispanic, by=c("holc_grade"))
-
-holc_grades_pct <-holc_grades_ten%>%inner_join(holc_grades_pct, by=c("holc_grade"))
-
-
-#holc grades with pct >5 per race
-
-holc_count_black <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_black > 5) %>% 
-  summarise(
-    five_pct_black_neighborhoods_count = n()
-  )
-
-holc_count_hispanic  <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_hisp > 5) %>% 
-  summarise(
-    five_pct_hisp_neighborhoods_count = n()
-  )
-
-holc_count_asian  <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_asian > 5) %>% 
-  summarise(
-    five_pct_asian_neighborhoods_count = n()
-  )
-
-holc_count_white  <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_white > 5) %>% 
-  summarise(
-    five_pct_white_neighborhoods_count = n()
-  )
-
-holc_grades_five <- holc_count_white %>% inner_join(holc_count_black, by=c("holc_grade"))
-
-holc_grades_five <-holc_grades_five%>%inner_join(holc_count_asian, by=c("holc_grade"))
-
-holc_grades_five <-holc_grades_five%>%inner_join(holc_count_hispanic, by=c("holc_grade"))
-
-holc_grades_pct <-holc_grades_five%>%inner_join(holc_grades_pct, by=c("holc_grade"))
-
-
-```
-
-```{r}
-holc_three <-metro_grades%>%
-  group_by(holc_grade)%>%
-  filter(pct_asian >3, pct_black > 3, pct_white>3, pct_hisp>3)%>%
-  summarise(
-    neighborhoods_greater_than_three_pct_each_race=n()
-  )
-
-
-holc_four <-metro_grades%>%
-  group_by(holc_grade)%>%
-  filter(pct_asian >4, pct_black > 4, pct_white>4, pct_hisp>4)%>%
-  summarise(
-    neighborhoods_greater_than_four_pct_each_race=n()
-  )
-
-holc_five <-metro_grades%>%
-  group_by(holc_grade)%>%
-  filter(pct_asian >5, pct_black > 5, pct_white>5, pct_hisp>5)%>%
-  summarise(
-    neighborhoods_greater_than_five_pct_each_race=n()
-  )
-
-holc_six<-metro_grades%>%
-  group_by(holc_grade)%>%
-  filter(pct_asian >6, pct_black > 6, pct_white>6, pct_hisp>6)%>%
-  summarise(
-    neighborhoods_greater_than_six_pct_each_race=n()
-  )
-
-holc_diverse_neighborhoods <- holc_three %>% inner_join(holc_four, by=c("holc_grade"))
-
-holc_diverse_neighborhoods <- holc_diverse_neighborhoods %>% inner_join(holc_five, by=c("holc_grade"))
-
-holc_diverse_neighborhoods <- holc_diverse_neighborhoods %>% inner_join(holc_six, by=c("holc_grade"))
-
-
-
 ```
 
 
@@ -396,7 +212,7 @@ metro_grades_w_region <- metro_grades_plus_state %>%
       (state %in% c("TX", "OK", "AR", "LA")) == TRUE ~ "West South Central",
       (state %in% c("ND", "SD", "NE", "KS", "MN", "IA", "MO")) == TRUE ~ "West North Central",
       (state %in% c("WI", "IL", "IN", "MI", "OH")) == TRUE ~ "East North Central",
-      (state %in% c("KY", "TN", "MS", "AL")) == TRUE ~ "East Soutch Central",
+      (state %in% c("KY", "TN", "MS", "AL")) == TRUE ~ "East South Central",
       (state %in% c("DE", "DC", "FL", "GA", "SC", "NC", "WV", "VA", "MD")) == TRUE ~ "South Atlantic",
       (state %in% c("CT", "ME", "MA", "VT", "NH", "RI")) == TRUE ~ "New England",
       (state %in% c("NJ", "NY", "PA")) == TRUE ~ "Middle Atlantic"

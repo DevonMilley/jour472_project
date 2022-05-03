@@ -164,8 +164,13 @@ holc_grades_twenty <-holc_grades_twenty%>%inner_join(holc_count_hispanic, by=c("
 
 ### Sentence 4
 
-* **Sentence text**: [Paste in sentence to engineer here]
-* **Analysis summary**: This code does pretty much the same thing as the code that looks at the racial breakdown of HOLC grades, but it also groups by state. When arranging the results by the white percent, we found that
+
+* **Analysis summary**: This code does pretty much the same thing as the code that looks at the racial breakdown of HOLC grades, but it also groups by state. Here we are forming the bedrock of our analysis that makes comparisons of the racial makeups of HOLC grades between geographic areas.
+
+When arranging the results by HOLC A grades with the highest white percentage, we found that South Carolina is at the top with a figure of 88.98% — this is roughly 15 points higher than the national average for HOLC A grades, which is 73.78%. Other states that followed were Kentucky, Tennessee, Indiana, and Virginia, which had white percentages 10 points greater than the national average. Elsewhere, Maryland had the highest average Black percentage for HOLC A grades, with a figure of 41.04%. This is 35 points greater than the national average of 8.89%. 
+
+In the next section of analysis, we will use these state averages to paint a regional picture. States will be grouped into their census designated regions then similar comparisons will be made between the racial makeup of states' HOLC grades, as well as the national averages.
+
 
 ```{r}
 # Put code to reverse engineer sentence here

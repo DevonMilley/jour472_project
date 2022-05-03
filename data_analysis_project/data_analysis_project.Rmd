@@ -16,7 +16,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Introduction
+## Introduction/Summary
 
 In this notebook, we are analyzing this data, The Lasting Legacy Of Redlining.
 
@@ -32,24 +32,19 @@ The other .csv file in this dataset is the product of FiveThirtyEight journalist
 
 
 ## Load libraries
-
-Loading required libraries for this analysis.
-
 ```{r echo=FALSE, message=FALSE}
 library(tidyverse)
 library(sf)
 library(janitor)
 library(lubridate)
 library(dplyr)
-
+library(tidycensus)
 ```
 
 ## Load and Cleaning Data
-
 In this section, describe the source of the data, write a basic data dictionary for data you are working with, and discuss any caveats or issues you discovered working with this data.
 
 There are 551 rows and 28 columns in the dataset.
-
 ```{r}
 # Load required data
 
@@ -58,13 +53,7 @@ metro_grades<-read_csv("data/metro-grades.csv")
 zone_block_matches<-st_read("data/zone-block-matches.csv")
 
 ```
-
-## Sentences to Engineer
-In this notebook, we are reverse engineering five sentences from the story.
-
-### Sentence 1
-
-* **Sentence text**: For each Holc grade, what is the racial composition?
+## For each HOLC grade, what is the racial composition?
 * **Analysis summary**: Our analysis of this question is the most effective of the three, and its findings will be helpful in guiding the rest of our project. To answer it, we grouped by holc_grade then summarised the mean percentage populations of each race in accordance with HOLC letter grades. We found that the majority of neighborhoods that received a HOLC grade of A had a high percent of white people. A grade neighborhoods only had about 8% Black and Hispanic populations each. Lower graded neighborhoods at the C and D level, had higher percents of Black and Hispanic populations, making up about 50% combined for D-level neighborhoods and 41% combined for C-level neighborhoods.  
 
 As we note in the next section, we'd like to try and use this method to see how mean race percentages change from state to state. This will be the start of the geographic analysis we hope to heavily explore.
@@ -90,10 +79,7 @@ holc_grades_race <- metro_grades %>%
 
 ```
 
-### Sentence 2
-
-* **Sentence text**: What is the Holc grade breakdown by state? -- need to create a state column
-* **Analysis summary**: 
+###  What is the Holc grade breakdown by state? -- need to create a state column
 
 This process made us realize that our dataset aggregates the A, B, C, and D HOLC grades for each city then summarizes the demographic data for each grade. Thus, when we went to summarize HOLC grades by state, we found that the grade counts were consistent across all columns. Our discovery leads us to a new line of inquiry, however. Next week, we can analyze each state's data in a way similar to the process in Sentence 1 and summarize the mean demographic percentages for each state's A, B, C, and D grades.
 
@@ -199,8 +185,15 @@ holc_grades_race_state <- metro_grades_plus_state %>%
 
 ### Sentence 5
 
-* **Sentence text**: [Paste in sentence to engineer here]
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Sentence text**: We created a new region column using regions defined by the U.S. Census (https://www2.census.gov/geo/pdfs/maps-data/maps/reference/us_regdiv.pdf). We then found the average race of each HOLC grade by region. The East South Central region, which includes Kentucky, Tennessee, Mississippi and Alabama, had the highest average percent of white population with A-level HOLC grades at 81.28%. That is 8% higher than the overall average white population percentage of HOLC A grades.
+
+In every region, the average white population percent is at least 57%.
+
+The West South Central region has the highest average Black population percent of HOLC A grades at 12.6%. That is 4% higher than the overall average Black population percentage of HOLC A grades. 
+
+The West North Central region has an average white population percentage of HOLC D grades of 58.2%, which is significantly higher than the other regions'. This can probably be explained by the states' racial breakdown. 
+
+The West South Central region has the highest average Hispanic population percent of HOLC A grades at 21.4%. This is about 18% higher than the overall average. States in this region include Texas, Oklahoma, Arkansas and Louisiana.
 
 ```{r}
 
@@ -231,6 +224,23 @@ holc_grades_race_region <- metro_grades_w_region %>%
     pct_hisp = mean(pct_hisp),
     pct_asian = mean(pct_asian),
     pct_other = mean(pct_other))
+```
+
+
+##State map
+
+We plan to compare states' racial makeups with the racial makeup of each HOLC grade in a map. This will show the difference between total state racial makeup and the racial makeup of states' HOLC grades and see if there are any patterns or outliers. For example, this will help explain why the West North Central region had such a high average white population percent of HOLC D grades.
+```{r}
+census_api_key("b83f426335eaf420358cb85a8df817d0f82924c5")
+```
+
+```{r}
+v20 <- load_variables(2020, "acs5", cache = TRUE)
+```
+
+
+```{r}
+us_state_pop <- get_acs(geography="state", variables="B01003_001")
 ```
 
 

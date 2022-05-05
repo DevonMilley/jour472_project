@@ -39,6 +39,7 @@ library(janitor)
 library(lubridate)
 library(dplyr)
 library(tidycensus)
+library(tigris)
 ```
 
 ## Load and Cleaning Data
@@ -245,7 +246,109 @@ v20 <- load_variables(2020, "acs5", cache = TRUE)
 
 
 ```{r}
-us_state_pop <- get_acs(geography="state", variables="B01003_001")
+
+#this code loads population totals for the four most populous races in our HOLC data
+us_state_pop <- get_acs(geography="state", variables="B01003_001")%>%
+  rename(total_pop=estimate)
+
+us_state_pop_white <- get_acs(geography="state", variables="B01001A_001")%>%
+  rename(white_pop=estimate)
+
+us_state_pop_Black <- get_acs(geography="state", variables="B01001B_001")%>%
+  rename(Black_pop=estimate)
+
+us_state_pop_Hispanic <- get_acs(geography="state", variables="B01001I_001")%>%
+  rename(Hispanic_pop=estimate)
+
+us_state_pop_Asian <- get_acs(geography="state", variables="B01001D_001")%>%
+  rename(Asian_pop=estimate)
+
+
+#this code joins those population totals into one dataframe
+us_state_pop <-us_state_pop%>%left_join(us_state_pop_white, by=c("NAME"))
+
+us_state_pop <-us_state_pop%>%left_join(us_state_pop_Black, by=c("NAME"))
+
+us_state_pop <-us_state_pop%>%left_join(us_state_pop_Hispanic, by=c("NAME"))
+
+us_state_pop <-us_state_pop%>%left_join(us_state_pop_Asian, by=c("NAME"))
+
+#this code helps load state abbreviations, trim data
+us_state_pop<-us_state_pop%>%
+  select(GEOID, NAME, total_pop, white_pop, Black_pop, Hispanic_pop, Asian_pop)%>%
+  rename(state_name=NAME)
+
+fips_codes<-fips_codes%>%
+  select(state,state_name)%>%
+  distinct()
+
+us_state_pop <-us_state_pop%>%left_join(fips_codes, by=c("state_name"))
+  
+us_state_pop<-us_state_pop%>%
+select(state.x, total_pop, white_pop, Black_pop, Hispanic_pop, Asian_pop)%>%
+  rename(state=state.x)
+  
+#this code calculate percentage of total population
+us_state_pop<-us_state_pop%>%
+  mutate(pct_white=(white_pop/total_pop)*100)%>%
+    mutate(pct_Black=(Black_pop/total_pop)*100)%>%
+    mutate(pct_Hispanic=(Hispanic_pop/total_pop)*100)%>%
+    mutate(pct_Asian=(Asian_pop/total_pop)*100)
+
+us_state_pop<-us_state_pop%>%
+  select(state,pct_white,pct_Black,pct_Hispanic,pct_Asian)
+
+us_state_pop<-us_state_pop%>%
+  rename(total_pct_white=pct_white)%>%
+  rename(total_pct_black=pct_Black)%>%
+  rename(total_pct_hispanic=pct_Hispanic)%>%
+  rename(total_pct_asian=pct_Asian)
+
+
+#this code joins our HOLC data with our census population data
+us_pop_and_holc<-us_state_pop%>%left_join(holc_grades_race_state, by=c("state"))
+  
+us_pop_and_holc<-us_pop_and_holc%>%
+  rename(HOLC_pct_white=pct_white)%>%
+  rename(HOLC_pct_black=pct_black)%>%
+  rename(HOLC_pct_hispanic=pct_hisp)%>%
+  rename(HOLC_pct_asian=pct_asian)
+
+  us_pop_and_holc<-us_pop_and_holc%>%
+    rename(HOLC_pct_other=pct_other)
+  
+  #this code creates dataframe for each of four race columns ad calculates difference between percent of total population and percent of HOLC A grade population, by state
+  us_white_holc_dif<-us_pop_and_holc%>%
+    select(state,holc_grade,HOLC_pct_white,total_pct_white)%>%
+    mutate(diff_btwn_total_pct_and_holc_pct = (total_pct_white - HOLC_pct_white))
+  
+ us_white_holc_dif <-us_white_holc_dif%>%
+  filter(holc_grade=="A")
+
+ 
+  us_black_holc_dif<-us_pop_and_holc%>%
+    select(state,holc_grade,HOLC_pct_black,total_pct_black)%>%
+    mutate(diff_btwn_total_pct_and_holc_pct = (total_pct_black - HOLC_pct_black))%>%
+    filter(holc_grade=="A")
+  
+  us_hisp_holc_dif<-us_pop_and_holc%>%
+    select(state,holc_grade,HOLC_pct_hispanic,total_pct_hispanic)%>%
+    mutate(diff_btwn_total_pct_and_holc_pct = (total_pct_hispanic - HOLC_pct_hispanic))%>%
+    filter(holc_grade=="A")
+  
+    us_asian_holc_dif<-us_pop_and_holc%>%
+    select(state,holc_grade,HOLC_pct_asian,total_pct_asian)%>%
+    mutate(diff_btwn_total_pct_and_holc_pct = (total_pct_asian - HOLC_pct_asian))%>%
+    filter(holc_grade=="A")
+    
+write_csv(us_white_holc_dif, "us_white_holc_dif.csv")
+
+write_csv(us_black_holc_dif, "us_black_holc_dif.csv")
+
+write_csv(us_asian_holc_dif, "us_asian_holc_dif.csv")
+
+write_csv(us_hisp_holc_dif, "us_hisp_holc_dif.csv")
+
 ```
 
 

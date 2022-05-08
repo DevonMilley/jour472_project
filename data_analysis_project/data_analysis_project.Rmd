@@ -18,14 +18,19 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction/Summary
 
-In this notebook, we are analyzing this data, The Lasting Legacy Of Redlining.
+In this notebook, we are analyzing The Lasting Legacy Of Redlining.
 
 ## Variable explanations
 HOLC Grades
-One of the principal variables in this dataset is the Home Owners’ Loan Corporation (HOLC) grade. HOLC was a New Deal-era federal agency that collaborated with local banks, cities, and real estate appraisers to rate the “quality” of neighborhoods on a scale of A-D, with ‘A’ being the best and ‘D’ the worst. The variables used to determine these grades included objective indicators like access to amenities, i.e. parks and transportation, and biased variables based on the economic class and race of residents. HOLC grades were then used to determine a homeowner’s qualifications for a mortgage — homeowners in ‘D’ neighborhoods were less likely to receive friendly mortgages and reduced the value of their homes. The long-term impacts of HOLC grades included a drain of wealth from neighborhoods with unfavorable grades.
-HOLC grades will be used as a backdrop for the other variables in our dataset. They will show how neighborhoods with poor grades rebounded over the past eight decades and what influence, if any, those grades have on a neighborhood's demographics and median income levels.
+The Home Owners Loan Corporation was a New Deal-era federal agency that collaborated with local banks, cities and real estate appraisers to rate the “quality” of neighborhoods on a scale of A-D, with ‘A’ being the best and ‘D’ the worst. Factors that went into determining a neighborhood’s grade included objective indicators such as access to amenities like parks and transportation, and biased variables based on the economic class and race of residents.
+
+HOLC grades were then used to determine a homeowner’s qualifications for a mortgage; homeowners in D-grade neighborhoods were less likely to receive friendly mortgages and reduced the value of their homes. The long-term impacts of HOLC grades included a drain of wealth from neighborhoods with unfavorable grades.
+
+HOLC grades will be used as a backdrop for the other variables in our dataset. We will focus on how a neighborhood's HOLC grade impacted its current’ racial breakdown.
+
+
 Demographic Data
-Accompanying the HOLC grades in FiveThirtyEight’s dataset are modern demographic data that show the racial makeup of HOLC neighborhoods and surrounding areas. This includes base-data like total populations, as well as the percentage of a total population each demographic makes up. This will hasten analysis as some of our variables are pre-calculated.
+Accompanying the HOLC grades in FiveThirtyEight’s dataset are modern demographic data that show the racial makeup of HOLC neighborhoods and surrounding areas.
 
 zone-block-matches.csv
 The other .csv file in this dataset is the product of FiveThirtyEight journalists matching old HOLC grades/neighborhoods with modern census blocks, then deriving census data and populating census geometry with it.
@@ -43,7 +48,6 @@ library(tigris)
 ```
 
 ## Load and Cleaning Data
-In this section, describe the source of the data, write a basic data dictionary for data you are working with, and discuss any caveats or issues you discovered working with this data.
 
 There are 551 rows and 28 columns in the dataset.
 ```{r}
@@ -54,17 +58,11 @@ metro_grades<-read_csv("data/metro-grades.csv")
 zone_block_matches<-st_read("data/zone-block-matches.csv")
 
 ```
-## For each HOLC grade, what is the racial composition?
-* **Analysis summary**: Our analysis of this question is the most effective of the three, and its findings will be helpful in guiding the rest of our project. To answer it, we grouped by holc_grade then summarised the mean percentage populations of each race in accordance with HOLC letter grades. We found that the majority of neighborhoods that received a HOLC grade of A had a high percent of white people. A grade neighborhoods only had about 8% Black and Hispanic populations each. Lower graded neighborhoods at the C and D level, had higher percents of Black and Hispanic populations, making up about 50% combined for D-level neighborhoods and 41% combined for C-level neighborhoods.  
+## Mean racial composition percentages for A, B, C, and D HOLC Grades:
+We started analyzing our data broadly, looking to see the racial composition of each HOLC grade. To do this, we grouped the metro_grades dataset by HOLC grade and found the average of each race’s percentage. 
 
-As we note in the next section, we'd like to try and use this method to see how mean race percentages change from state to state. This will be the start of the geographic analysis we hope to heavily explore.
-
-
+We found that the majority of neighborhoods that received a HOLC grade of A had a high percent of white people. A-grade neighborhoods only had about 8% Black and Hispanic populations each. Lower graded neighborhoods at the C and D level, had higher percents of Black and Hispanic populations, making up about 50% combined for D-level neighborhoods and 41% combined for C-level neighborhoods.  
 ```{r}
-# Put code to reverse engineer sentence here
-
-#we should compare national to regional, national to state ?
-
 holc_grades_race <- metro_grades %>% 
   group_by(holc_grade) %>% 
   summarise(
@@ -73,133 +71,26 @@ holc_grades_race <- metro_grades %>%
     pct_hisp = mean(pct_hisp),
     pct_asian = mean(pct_asian),
     pct_other = mean(pct_other))
-
-
-
-# Display results of code below this codeblock
-
 ```
 
-###  What is the Holc grade breakdown by state? -- need to create a state column
+## Mean racial composition percentages for A, B, C, and D HOLC Grades by Region:
+When analyzing racial breakdown by region, as defined by the U.S. Census, we found that the West North Central region has an average white population percentage of HOLC D grades of 58.2%, which is significantly higher than the other regions'. This can probably be explained by the states' racial breakdown.
 
-This process made us realize that our dataset aggregates the A, B, C, and D HOLC grades for each city then summarizes the demographic data for each grade. Thus, when we went to summarize HOLC grades by state, we found that the grade counts were consistent across all columns. Our discovery leads us to a new line of inquiry, however. Next week, we can analyze each state's data in a way similar to the process in Sentence 1 and summarize the mean demographic percentages for each state's A, B, C, and D grades.
+We also found that the East South Central region, which includes Kentucky, Tennessee, Mississippi and Alabama, had the highest average percent of white population with A-level HOLC grades at 81.28%. That is 8% higher than the overall average white population percentage of HOLC A grades.
 
+The West South Central region has the highest average Hispanic population percent of HOLC A grades at 21.4%. This is about 18% higher than the overall average. States in this region include Texas, Oklahoma, Arkansas and Louisiana.
+
+
+The West South Central region has the highest average Black population percent of HOLC A grades at 12.6%. That is 4% higher than the overall average Black population percentage of HOLC A grades.
+
+To do this, we created a new region column using regions defined by the U.S. Census (https://www2.census.gov/geo/pdfs/maps-data/maps/reference/us_regdiv.pdf). We then found the average race of each HOLC grade by region. 
 
 ```{r}
-# Put code to reverse engineer sentence here
-
 metro_grades_plus_state <- metro_grades %>% 
   mutate(
     state=str_sub(metro_area, start=-2, end=-1)
   )
-
-holc_by_state <- metro_grades_plus_state %>%
-  group_by(state) %>% 
-  summarise(
-    a_count = sum(holc_grade == "A"),
-    b_count = sum(holc_grade == "B"),
-    c_count = sum(holc_grade == "C"),
-    d_count = sum(holc_grade == "D")
-  )
-```  
-
-
-
- Sentence 3
-
-* **Sentence text**: For metro areas with at least 50% of a particular race, how many As, Bs, Cs, Ds are there?
-* **Analysis summary**: So, we have pivoted quite a bit from this initial question, and instead tried to determine quartiles of percentages for each race's population share but encountered some difficulties. We then went back to our old method and created a master dataframe that counts the grades when a race's population share is greater than a certain percentage. We went with 5, 10, 15 and 20, because those numbers bring back the most results without excluding any races. Unfortunately, since there are no results for a HOLC grade of "A" when pct_asian is >20%, and I could not figure out how to include the A count anyways, I had to remove that summation — otherwise it would remove the "A" row in the master dataframe.
-
-We also created a diverse neighborhoods dataframe that looked for similar counts, except when all races meet a certain percentage threshold, i.e. >3%, 4%, 5%, etc. I think that this dataframe shows the most promise in this analysis section, but we'd like to figure out a way to bring back more results and perhaps structure a new dataframe that shows combinations of two races greater than a percentage threshold in an effective and concise way.
-
-Overall, what this data reveals is that when larger percentage caps are put on white neighborhoods, such as >15% and >20%, the number of C and D grades decrease while the A and B grades remain relatively constant, where as the opposite is true for black neighborhoods — C and D grades increase while A and B grades decrease substantially.
-
-```{r}
-#lets do quartiles of percentages !!!, also consider plurality, not just majority
-#Put code to reverse engineer sentence here
-#could do something like this but idk why it's not working. may just have to do four tables (filtering on each quartile) for each race and join them together to get what we want. i just feel like there's a more efficient way to do that - Devon
-
-holc_count_white_neighborhoods <- metro_grades %>% 
-  mutate(
-  white_neighborhoods_count = case_when(
-    (pct_white %in% c(0.00:25.00)) == TRUE ~ "0-25% white neighborhood",
-    (pct_white %in% c(25.01:50.00)) == TRUE ~ "25-50% white neighborhood",
-    (pct_white %in% c(50.01:75.00)) == TRUE ~ "50-75% white neighborhood",
-    (pct_white %in% c(75.01:100.00)) == TRUE ~ "75-100% white neighborhood"))
- # group_by(white_neighborhoods_count) %>% 
-  #summarise(
-   # count = n()
-  #)
 ```
-
-```{r}
-#holc grades with pct >20 per race
-
-holc_count_black <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_black > 20) %>% 
-  summarise(
-    twenty_pct_black_neighborhoods_count = n()
-  )
-
-holc_count_hispanic  <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_hisp > 20) %>% 
-  summarise(
-    twenty_pct_hisp_neighborhoods_count = n()
-  )
-
-
-holc_count_white  <- metro_grades %>% 
-  group_by(holc_grade) %>% 
-  filter(pct_white > 20) %>% 
-  summarise(
-    twenty_pct_white_neighborhoods_count = n()
-  )
-
-holc_grades_twenty <- holc_count_white %>% inner_join(holc_count_black, by=c("holc_grade"))
-
-holc_grades_twenty <-holc_grades_twenty%>%inner_join(holc_count_hispanic, by=c("holc_grade"))
-```
-
-
-### Sentence 4
-
-
-* **Analysis summary**: This code does pretty much the same thing as the code that looks at the racial breakdown of HOLC grades, but it also groups by state. Here we are forming the bedrock of our analysis that makes comparisons of the racial makeups of HOLC grades between geographic areas.
-
-When arranging the results by HOLC A grades with the highest white percentage, we found that South Carolina is at the top with a figure of 88.98% — this is roughly 15 points higher than the national average for HOLC A grades, which is 73.78%. Other states that followed were Kentucky, Tennessee, Indiana, and Virginia, which had white percentages 10 points greater than the national average. Elsewhere, Maryland had the highest average Black percentage for HOLC A grades, with a figure of 41.04%. This is 35 points greater than the national average of 8.89%. 
-
-In the next section of analysis, we will use these state averages to paint a regional picture. States will be grouped into their census designated regions then similar comparisons will be made between the racial makeup of states' HOLC grades, as well as the national averages.
-
-
-```{r}
-# Put code to reverse engineer sentence here
-
-holc_grades_race_state <- metro_grades_plus_state %>% 
-  group_by(holc_grade, state) %>% 
-  summarise(
-    pct_white = mean(pct_white),
-    pct_black = mean(pct_black),
-    pct_hisp = mean(pct_hisp),
-    pct_asian = mean(pct_asian),
-    pct_other = mean(pct_other))
-
-# Display results of code below this codeblock
-
-```
-
-### Sentence 5
-
-* **Sentence text**: We created a new region column using regions defined by the U.S. Census (https://www2.census.gov/geo/pdfs/maps-data/maps/reference/us_regdiv.pdf). We then found the average race of each HOLC grade by region. The East South Central region, which includes Kentucky, Tennessee, Mississippi and Alabama, had the highest average percent of white population with A-level HOLC grades at 81.28%. That is 8% higher than the overall average white population percentage of HOLC A grades.
-
-In every region, the average white population percent is at least 57%.
-
-The West South Central region has the highest average Black population percent of HOLC A grades at 12.6%. That is 4% higher than the overall average Black population percentage of HOLC A grades. 
-
-The West North Central region has an average white population percentage of HOLC D grades of 58.2%, which is significantly higher than the other regions'. This can probably be explained by the states' racial breakdown. 
-
-The West South Central region has the highest average Hispanic population percent of HOLC A grades at 21.4%. This is about 18% higher than the overall average. States in this region include Texas, Oklahoma, Arkansas and Louisiana.
 
 ```{r}
 
@@ -220,7 +111,6 @@ metro_grades_w_region <- metro_grades_plus_state %>%
   )
 ```
 
-
 ```{r}
 holc_grades_race_region <- metro_grades_w_region %>% 
   group_by(holc_grade, region) %>% 
@@ -233,6 +123,28 @@ holc_grades_race_region <- metro_grades_w_region %>%
 ```
 
 
+## Mean racial composition percentages for A, B, C, and D HOLC Grades by State:
+This code looks at the racial breakdown of HOLC grades, grouped by state. 
+
+When arranging the results by HOLC A grades with the highest average white population percentage, we found that South Carolina is at the top with a figure of 88.98% — this is roughly 15 points higher than the national average for HOLC A grades, which is 73.78%. Other states that followed were Kentucky, Tennessee, Indiana and Virginia, which had white percentages 10 points greater than the national average. 
+
+Conversely, states with Holc D grades that had the highest average Black population percentage include Mississippi, Arkansas, Alabama, Louisiana and North Carolina. Each state was at least 35 percentage points higher than the national average of the Black populations with a Holc D grade.
+
+Elsewhere, Maryland had the highest average Black percentage for HOLC A grades, with a figure of 41.04%. This is 35 points greater than the national average of 8.89%.
+
+```{r}
+
+holc_grades_race_state <- metro_grades_plus_state %>% 
+  group_by(holc_grade, state) %>% 
+  summarise(
+    pct_white = mean(pct_white),
+    pct_black = mean(pct_black),
+    pct_hisp = mean(pct_hisp),
+    pct_asian = mean(pct_asian),
+    pct_other = mean(pct_other))
+
+```
+
 ##State map
 
 We plan to compare states' racial makeups with the racial makeup of each HOLC grade in a map. This will show the difference between total state racial makeup and the racial makeup of states' HOLC grades and see if there are any patterns or outliers. For example, this will help explain why the West North Central region had such a high average white population percent of HOLC D grades.
@@ -243,7 +155,6 @@ census_api_key("b83f426335eaf420358cb85a8df817d0f82924c5")
 ```{r}
 v20 <- load_variables(2020, "acs5", cache = TRUE)
 ```
-
 
 ```{r}
 
@@ -283,7 +194,8 @@ fips_codes<-fips_codes%>%
   distinct()
 
 us_state_pop <-us_state_pop%>%left_join(fips_codes, by=c("state_name"))
-  
+
+## I got an error here -Devon  
 us_state_pop<-us_state_pop%>%
 select(state.x, total_pop, white_pop, Black_pop, Hispanic_pop, Asian_pop)%>%
   rename(state=state.x)
@@ -349,6 +261,72 @@ write_csv(us_asian_holc_dif, "us_asian_holc_dif.csv")
 
 write_csv(us_hisp_holc_dif, "us_hisp_holc_dif.csv")
 
+```
+
+###  What is the Holc grade breakdown by state?
+This process made us realize that our dataset aggregates the A, B, C, and D HOLC grades for each city then summarizes the demographic data for each grade. Thus, when we went to summarize HOLC grades by state, we found that the grade counts were consistent across all columns. Our discovery leads us to a new line of inquiry, however. Next week, we can analyze each state's data in a way similar to the process in Sentence 1 and summarize the mean demographic percentages for each state's A, B, C, and D grades.
+```{r}
+# Put code to reverse engineer sentence here
+
+
+holc_by_state <- metro_grades_plus_state %>%
+  group_by(state) %>% 
+  summarise(
+    a_count = sum(holc_grade == "A"),
+    b_count = sum(holc_grade == "B"),
+    c_count = sum(holc_grade == "C"),
+    d_count = sum(holc_grade == "D")
+  )
+```  
+
+## What is the racial brakdown of each HOLC grade? 
+We first tried to put count each row into these "buckets" based on the percent white population, and we were going to do something similar for each race. The code was not counting correctly though, and we couldn't figure out why. 
+```{r}
+#lets do quartiles of percentages !!!, also consider plurality, not just majority
+#could do something like this but idk why it's not working. may just have to do four tables (filtering on each quartile) for each race and join them together to get what we want. i just feel like there's a more efficient way to do that - Devon
+
+holc_count_white_neighborhoods <- metro_grades %>% 
+  mutate(
+  white_neighborhoods_count = case_when(
+    (pct_white %in% c(0.00:25.00)) == TRUE ~ "0-25% white neighborhood",
+    (pct_white %in% c(25.01:50.00)) == TRUE ~ "25-50% white neighborhood",
+    (pct_white %in% c(50.01:75.00)) == TRUE ~ "50-75% white neighborhood",
+    (pct_white %in% c(75.01:100.00)) == TRUE ~ "75-100% white neighborhood"))
+ # group_by(white_neighborhoods_count) %>% 
+  #summarise(
+   # count = n()
+  #)
+```
+
+We then tried to do the counting individually and join the tables together, but it was too much confusing code. 
+```{r}
+#holc grades with pct >20 per race
+
+holc_count_black <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_black > 20) %>% 
+  summarise(
+    twenty_pct_black_neighborhoods_count = n()
+  )
+
+holc_count_hispanic  <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_hisp > 20) %>% 
+  summarise(
+    twenty_pct_hisp_neighborhoods_count = n()
+  )
+
+
+holc_count_white  <- metro_grades %>% 
+  group_by(holc_grade) %>% 
+  filter(pct_white > 20) %>% 
+  summarise(
+    twenty_pct_white_neighborhoods_count = n()
+  )
+
+holc_grades_twenty <- holc_count_white %>% inner_join(holc_count_black, by=c("holc_grade"))
+
+holc_grades_twenty <-holc_grades_twenty%>%inner_join(holc_count_hispanic, by=c("holc_grade"))
 ```
 
 

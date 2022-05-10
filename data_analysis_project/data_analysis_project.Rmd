@@ -1,7 +1,7 @@
 ---
 title: "Data Analysis Project"
 author: "Devon Milley, Timothy Dashiell, Emmett Gartner"
-date: "04/15/2022"
+date: "05/10/2022"
 output:
   html_document:
     theme: cerulean
@@ -22,18 +22,18 @@ In this notebook, we are analyzing The Lasting Legacy Of Redlining.
 
 ## Variable explanations
 HOLC Grades
-The Home Owners Loan Corporation was a New Deal-era federal agency that collaborated with local banks, cities and real estate appraisers to rate the “quality” of neighborhoods on a scale of A-D, with ‘A’ being the best and ‘D’ the worst. Factors that went into determining a neighborhood’s grade included objective indicators such as access to amenities like parks and transportation, and biased variables based on the economic class and race of residents.
+The Home Owners Loan Corporation was a New Deal-era federal agency that collaborated with local banks, cities and real estate appraisers to rate the “quality” of neighborhoods on a scale of A-D, with A being the best and D the worst. Factors that went into determining a neighborhood’s grade included objective indicators such as access to amenities like parks and transportation, and biased variables based on the economic class and race of residents.
 
 HOLC grades were then used to determine a homeowner’s qualifications for a mortgage; homeowners in D-grade neighborhoods were less likely to receive friendly mortgages and reduced the value of their homes. The long-term impacts of HOLC grades included a drain of wealth from neighborhoods with unfavorable grades.
 
-HOLC grades will be used as a backdrop for the other variables in our dataset. We will focus on how a neighborhood's HOLC grade impacted its current’ racial breakdown.
+HOLC grades will be used as a backdrop for the other variables in our data set. We will focus on how a neighborhood's HOLC grade impacted its current’ racial breakdown.
 
 
 Demographic Data
-Accompanying the HOLC grades in FiveThirtyEight’s dataset are modern demographic data that show the racial makeup of HOLC neighborhoods and surrounding areas.
+Accompanying the HOLC grades in FiveThirtyEight’s data set are modern demographic data that show the racial makeup of HOLC neighborhoods and surrounding areas.
 
 zone-block-matches.csv
-The other .csv file in this dataset is the product of FiveThirtyEight journalists matching old HOLC grades/neighborhoods with modern census blocks, then deriving census data and populating census geometry with it.
+The other .csv file in this data set is the product of FiveThirtyEight journalists matching old HOLC grades/neighborhoods with modern census blocks, then deriving census data and populating census geometry with it.
 
 
 ## Load libraries
@@ -49,7 +49,7 @@ library(tigris)
 
 ## Load and Cleaning Data
 
-There are 551 rows and 28 columns in the dataset.
+There are 551 rows and 28 columns in the data set.
 ```{r}
 # Load required data
 
@@ -59,9 +59,9 @@ zone_block_matches<-st_read("data/zone-block-matches.csv")
 
 ```
 ## Mean racial composition percentages for A, B, C, and D HOLC Grades:
-We started analyzing our data broadly, looking to see the racial composition of each HOLC grade. To do this, we grouped the metro_grades dataset by HOLC grade and found the average of each race’s percentage. 
+We started analyzing our data broadly, looking to see the racial composition of each HOLC grade. To do this, we grouped the metro_grades data set by HOLC grade and found the mean of each race’s percentage. 
 
-We found that the majority of neighborhoods that received a HOLC grade of A had a high percent of white people. A-grade neighborhoods only had about 8% Black and Hispanic populations each. Lower graded neighborhoods at the C and D level, had higher percents of Black and Hispanic populations, making up about 50% combined for D-level neighborhoods and 41% combined for C-level neighborhoods.  
+We found that the majority of neighborhoods that received a HOLC grade of A had a high percent of white people. A-grade neighborhoods only had about 8% Black and Hispanic populations each. Lower graded neighborhoods at the C and D level, had higher percents of Black and Hispanic populations, making up about 51% combined for D-level neighborhoods and 41% combined for C-level neighborhoods.  
 ```{r}
 holc_grades_race <- metro_grades %>% 
   group_by(holc_grade) %>% 
@@ -74,16 +74,19 @@ holc_grades_race <- metro_grades %>%
 ```
 
 ## Mean racial composition percentages for A, B, C, and D HOLC Grades by Region:
-When analyzing racial breakdown by region, as defined by the U.S. Census, we found that the West North Central region has an average white population percentage of HOLC D grades of 58.2%, which is significantly higher than the other regions'. This can probably be explained by the states' racial breakdown.
+When analyzing racial breakdown by region, as defined by the U.S. Census, we found the West North Central region has an average white population percentage of HOLC D grades of 58.2%, which is significantly higher than the other regions. The states included in this region are Iowa, Kansas, Minnesota, Missouri, Nebraska, North Dakota and South Dakota.
+
+The average white population percentage of HOLC D grades in this region can be explained by population density and the area's racial breakdown. According to Statista, all states in the West North Central region rank in the bottom half of states' population density. Each state in that region also has an average white population percent of at least 61%. 
 
 We also found that the East South Central region, which includes Kentucky, Tennessee, Mississippi and Alabama, had the highest average percent of white population with A-level HOLC grades at 81.28%. That is 8% higher than the overall average white population percentage of HOLC A grades.
 
-The West South Central region has the highest average Hispanic population percent of HOLC A grades at 21.4%. This is about 18% higher than the overall average. States in this region include Texas, Oklahoma, Arkansas and Louisiana.
+Half of the states in this region have an average white population percent of more than 50%. The other two states — Alabama and Mississippi — have 49% and 25% average white population percent, respectively. It will be interesting to look at HOLC grades in Alabama and Mississippi to see whether there is a higher percent of A-grade neighborhoods with a high average Black population percent because the states themselves have a higher Black population in general.
 
+The West South Central region has the highest average Hispanic population percent of HOLC A grades at 21.4%. This is about 18% higher than the overall average. States in this region include Texas, Oklahoma, Arkansas and Louisiana. The high Hispanic population in Texas — 46% — probably brought up the region's average. 
 
-The West South Central region has the highest average Black population percent of HOLC A grades at 12.6%. That is 4% higher than the overall average Black population percentage of HOLC A grades.
+The West South Central region has the highest average Black population percent of HOLC A grades at 12.6%. That is 4% higher than the overall average Black population percentage of HOLC A grades. 
 
-To do this, we created a new region column using regions defined by the U.S. Census (https://www2.census.gov/geo/pdfs/maps-data/maps/reference/us_regdiv.pdf). We then found the average race of each HOLC grade by region. 
+To draw these conclusions, we created a new region column using regions defined by the U.S. Census (https://www2.census.gov/geo/pdfs/maps-data/maps/reference/us_regdiv.pdf). We then found the average race of each HOLC grade by region. To compare our results to the racial breakdown on a regional level and state level, we created different data frames for each region that averaged out the percent of each race. 
 
 ```{r}
 metro_grades_plus_state <- metro_grades %>% 
@@ -91,6 +94,46 @@ metro_grades_plus_state <- metro_grades %>%
     state=str_sub(metro_area, start=-2, end=-1)
   )
 ```
+
+```{r}
+metro_grades_west_north_central <- metro_grades_plus_state %>% 
+  filter(state == "IA" | state== "KS" | state=="MN" | state=="MO" | state=="NE" | state=="ND" | state=="SD") %>% 
+  group_by(state) %>% 
+  summarise(
+    avg_white_pct = mean(pct_white),
+    avg_black_pct = mean(pct_black),
+    avg_hisp_pct = mean(pct_hisp),
+    avg_asian_pct = mean(pct_asian),
+    avg_other_pct = mean(pct_other)
+  )
+```
+
+```{r}
+metro_grades_east_south_central <- metro_grades_plus_state %>% 
+  filter(state == "KY" | state== "TN" | state=="MS" | state=="AL") %>% 
+  group_by(state) %>% 
+  summarise(
+    avg_white_pct = mean(pct_white),
+    avg_black_pct = mean(pct_black),
+    avg_hisp_pct = mean(pct_hisp),
+    avg_asian_pct = mean(pct_asian),
+    avg_other_pct = mean(pct_other)
+  )
+```
+
+```{r}
+metro_grades_west_south_central <- metro_grades_plus_state %>% 
+  filter(state == "TX" | state== "OK" | state=="AR" | state=="LA") %>% 
+  group_by(state) %>% 
+  summarise(
+    avg_white_pct = mean(pct_white),
+    avg_black_pct = mean(pct_black),
+    avg_hisp_pct = mean(pct_hisp),
+    avg_asian_pct = mean(pct_asian),
+    avg_other_pct = mean(pct_other)
+  )
+```
+
 
 ```{r}
 
@@ -130,20 +173,59 @@ When arranging the results by HOLC A grades with the highest average white popul
 
 Conversely, states with Holc D grades that had the highest average Black population percentage include Mississippi, Arkansas, Alabama, Louisiana and North Carolina. Each state was at least 35 percentage points higher than the national average of the Black populations with a Holc D grade.
 
-Elsewhere, Maryland had the highest average Black percentage for HOLC A grades, with a figure of 41.04%. This is 35 points greater than the national average of 8.89%.
+In our regional analysis, we previously found that Alabama and Mississippi have a less than 50% average white population but the region they're part of had the highest average percent of white population with A-level HOLC grades. The average Black populations in Alabama and Mississippi are 40% and 68%, respectively.
+
+A scatterplot of the average Black population in all the states and the average Black population percent of HOLC D grades shows a strong positive correlation. A correlation test also shows a very low p-value, indicating the correlation between these two variables is statistically significant and probably not random.
+
+Elsewhere, Maryland had the highest average Black percentage for HOLC A grades, with a figure of 41.04%. This is 35 points greater than the national average of 8.89%. Maryland's Black population is about 44%, so these numbers match pretty well.
 
 ```{r}
 
 holc_grades_race_state <- metro_grades_plus_state %>% 
   group_by(holc_grade, state) %>% 
   summarise(
-    pct_white = mean(pct_white),
-    pct_black = mean(pct_black),
-    pct_hisp = mean(pct_hisp),
-    pct_asian = mean(pct_asian),
-    pct_other = mean(pct_other))
+    avg_pct_white = mean(pct_white),
+    avg_pct_black = mean(pct_black),
+    avg_pct_hisp = mean(pct_hisp),
+    avg_pct_asian = mean(pct_asian),
+    avg_pct_other = mean(pct_other))
 
 ```
+
+```{r}
+metro_grades_all <- metro_grades_plus_state %>% 
+  group_by(state) %>% 
+  summarise(
+    white_pct_pop = mean(pct_white),
+    black_pct_pop = mean(pct_black),
+    hisp_pct_pop = mean(pct_hisp),
+    asian_pct_pop = mean(pct_asian),
+    other_pct_pop = mean(pct_other)
+  )
+```
+
+
+```{r}
+compare_pop_and_grades <- holc_grades_race_state %>% left_join(metro_grades_all, by=c("state"="state"))
+```
+
+```{r}
+compare_pop_and_grades_just_d <- compare_pop_and_grades %>% 
+  filter(holc_grade == "D")
+```
+
+
+```{r}
+compare_pop_and_grades_just_d %>%
+  ggplot() +
+  geom_point(aes(x=black_pct_pop,y=avg_pct_black)) +
+  geom_smooth(aes(x=black_pct_pop,y=avg_pct_black), method="lm")
+```
+
+```{r}
+cor.test(compare_pop_and_grades_just_d$black_pct_pop, compare_pop_and_grades_just_d$avg_pct_black)
+```
+
 
 #Explaination of outliers when compared to state's census demographics
 

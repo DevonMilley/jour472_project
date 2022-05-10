@@ -170,12 +170,13 @@ us_pop_and_holc%>%
   filter(total_pct_hispanic<HOLC_pct_hispanic)
 ```
 
-
-
-
 ```{r}
 census_api_key("b83f426335eaf420358cb85a8df817d0f82924c5")
 ```
+#Map displaying demographic difference between HOLC A grade and top four state-wide race demographics.
+
+
+
 
 ```{r}
 v20 <- load_variables(2020, "acs5", cache = TRUE)

@@ -256,9 +256,27 @@ us_pop_and_holc%>%
 census_api_key("b83f426335eaf420358cb85a8df817d0f82924c5")
 ```
 #Map displaying demographic difference between HOLC A grade and top four state-wide race demographics.
+Through these Datawrapper maps, we visually display the differences between each state's HOLC A neighborhood composition and the state's Census demographics. To do so, we break down HOLC A neighborhoods by Black, white, Asian and Hispanic composition then represent the difference with the state's total racial composition by percentage points. These were the main takeaways:
 
+1. Maryland and Midwest states have a higher percentage Black population in HOLC A neighborhoods than their respective state demographics. This means that neighborhoods that were considered desirable by the Home Owners Loan Corporation are now more diverse than their state average, an interesting finding, considering diverse neighborhoods were given lower grades during this New Deal-era program.
 
+2. Texas and South Dakota HOLC A neighborhoods are much less white than state demographics. Such findings reveal, similar to the previous finding, that neighborhoods then considered desirable are now less white than the state average. Conversely, Southeastern states have whiter HOLC A Neighborhoods than their state demographics, possibly indicating that the status quo of HOLC grades and the New Deal-era remain.
 
+3. California, Illinois, and New York HOLC A neighborhoods are all significantly less Hispanic than their state demographics. This is an interesting finding considering the overall diversity of these states. What this could indicate, however, is that these states' Hispanic populations are more concentrated outside of these metro areas, or that they are concentrated in HOLC B, C, and D neighborhoods.
+
+4.Lastly, our maps show that Minnesota and New Hampshire lead states with HOLC A neighborhoods more Asian than their state demographics. 
+
+Black HOLC A Grade Demographics vs. State Demographics
+https://datawrapper.dwcdn.net/iQyV2/1/
+
+White HOLC A Grade Demographics vs. State Demographics:
+https://datawrapper.dwcdn.net/K4tQ0/3/
+
+Hispanic HOLC A Grade Demographics vs. State Demographics:
+https://datawrapper.dwcdn.net/73fPV/2/
+
+Asian HOLC A Grade Demographics vs. State Demographics:
+https://datawrapper.dwcdn.net/xEauK/1/
 
 ```{r}
 v20 <- load_variables(2020, "acs5", cache = TRUE)
@@ -435,6 +453,10 @@ holc_grades_twenty <- holc_count_white %>% inner_join(holc_count_black, by=c("ho
 
 holc_grades_twenty <-holc_grades_twenty%>%inner_join(holc_count_hispanic, by=c("holc_grade"))
 ```
+
+#Conclusion
+
+In summary, our investigation centered on the geographic differences of HOLC grades and the racial composition of HOLC neighborhoods. Our findings show that some states have more diverse HOLC A neighborhoods — those considered most desirable to live in — than their state demographics, which indicates diversifying neighborhoods in areas that were once judged negatively for diversity. Additionally, in Southeastern states like South Carolina, the high proportion of white residents in HOLC neighborhoods that once bolstered a neighborhood's A grade, are more white than their state population — a possible lasting side-effect from redlining.
 
 
 -30-

@@ -456,7 +456,7 @@ holc_grades_twenty <-holc_grades_twenty%>%inner_join(holc_count_hispanic, by=c("
 
 #Conclusion
 
-In summary, our investigation centered on the geographic differences of HOLC grades and the racial composition of HOLC neighborhoods. Our findings show that some states have more diverse HOLC A neighborhoods — those considered most desirable to live in — than their state demographics, which indicates diversifying neighborhoods in areas that were once judged negatively for diversity. Additionally, in Southeastern states like South Carolina, the high proportion of white residents in HOLC neighborhoods that once bolstered a neighborhood's A grade, are more white than their state population — a possible lasting side-effect from redlining.
+In summary, our investigation centered on the geographic differences of HOLC grades and the racial composition of HOLC neighborhoods. Our findings show that some states have more diverse HOLC A neighborhoods — those considered most desirable to live in — than their state demographics, which indicates diversifying neighborhoods in areas that were once judged negatively for diversity. Additionally, in Southeastern states like South Carolina, the high proportion of white residents in HOLC neighborhoods that once bolstered a neighborhood's A grade, are more white than their state population — a possible lasting side-effect from redlining. 
 
 
 -30-

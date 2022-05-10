@@ -78,13 +78,13 @@ When analyzing racial breakdown by region, as defined by the U.S. Census, we fou
 
 The average white population percentage of HOLC D grades in this region can be explained by population density and the area's racial breakdown. According to Statista, all states in the West North Central region rank in the bottom half of states' population density. Each state in that region also has an average white population percent of at least 61%. 
 
-We also found that the East South Central region, which includes Kentucky, Tennessee, Mississippi and Alabama, had the highest average percent of white population with A-level HOLC grades at 81.28%. That is 8% higher than the overall average white population percentage of HOLC A grades.
+We also found that the East South Central region, which includes Kentucky, Tennessee, Mississippi and Alabama, had the highest average percent of white population with A-level HOLC grades at 81.28%. That is 8 percentage points higher than the overall average white population percentage of HOLC A grades.
 
 Half of the states in this region have an average white population percent of more than 50%. The other two states — Alabama and Mississippi — have 49% and 25% average white population percent, respectively. It will be interesting to look at HOLC grades in Alabama and Mississippi to see whether there is a higher percent of A-grade neighborhoods with a high average Black population percent because the states themselves have a higher Black population in general.
 
-The West South Central region has the highest average Hispanic population percent of HOLC A grades at 21.4%. This is about 18% higher than the overall average. States in this region include Texas, Oklahoma, Arkansas and Louisiana. The high Hispanic population in Texas — 46% — probably brought up the region's average. 
+The West South Central region has the highest average Hispanic population percent of HOLC A grades at 21.4%. This is about 18 percentage points higher than the overall average. States in this region include Texas, Oklahoma, Arkansas and Louisiana. The high Hispanic population in Texas — 46% — probably brought up the region's average. 
 
-The West South Central region has the highest average Black population percent of HOLC A grades at 12.6%. That is 4% higher than the overall average Black population percentage of HOLC A grades. 
+The West South Central region has the highest average Black population percent of HOLC A grades at 12.6%. That is 4 percentage points higher than the overall average Black population percentage of HOLC A grades. 
 
 To draw these conclusions, we created a new region column using regions defined by the U.S. Census (https://www2.census.gov/geo/pdfs/maps-data/maps/reference/us_regdiv.pdf). We then found the average race of each HOLC grade by region. To compare our results to the racial breakdown on a regional level and state level, we created different data frames for each region that averaged out the percent of each race. 
 

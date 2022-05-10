@@ -145,9 +145,34 @@ holc_grades_race_state <- metro_grades_plus_state %>%
 
 ```
 
-##State map
+#Explaination of outliers when compared to state's census demographics
 
-We plan to compare states' racial makeups with the racial makeup of each HOLC grade in a map. This will show the difference between total state racial makeup and the racial makeup of states' HOLC grades and see if there are any patterns or outliers. For example, this will help explain why the West North Central region had such a high average white population percent of HOLC D grades.
+Following an investigation that strictly analyzed HOLC neighborhood demographics, we joined our data with Census demographic data and compared racial compositions in HOLC A, B, C and D neighborhoods to the state-wide figures. 
+
+Doing so provided interesting background for our findings in our previous sections. South Carolina, the outlier with an especially high percentage white population in its HOLC A neighborhoods, has a demographic composition not all that different from Maryland, the outlier with an especially high percentage Black population in its HOLC A neighborhoods. According to Census data, Maryland is 55.54% white and 29.89% Black, while South Carolina is 67.16% white and 26.77% Black. Now, although the white population percentages differ more substantially, the Black population percentages are only off by ~3 percentage points. Yet, their HOLC A grade compositions differ heavily from one another.
+
+In an earlier section, we identified that the  West North Central region has an average white population percentage of HOLC D grades of 58.2% — a major outlier in the dataset. Comparing the states that comprise that region's Census data to their HOLC data helped explain why that is. Each state has a white population percentage greater than 80%. 
+
+Summary statistics on this dataset also brought back its own unique findings. 23 of our 37 states with HOLC data had HOLC A demographics less white than their state's Census demographics. Elswhere, nine of 37 states had HOLC A demographics that were more Black than their state's Census demographics, including a chunk of West North Central states like South Dakota, Nebraska, and Iowa. Additionally, eight states' HOLC A demographics were more Hispanic than their state's demographics. This is likely explained by the increased diversity in metro-areas compared to the larger demographics of the state (https://www.usnews.com/news/cities/articles/2020-01-22/americas-cities-are-becoming-more-diverse-new-analysis-shows).
+
+
+```{r}
+us_pop_and_holc%>%
+  filter(holc_grade=="A")%>%
+  filter(total_pct_white>HOLC_pct_white)
+
+us_pop_and_holc%>%
+  filter(holc_grade=="A")%>%
+  filter(total_pct_black<HOLC_pct_black)
+
+us_pop_and_holc%>%
+  filter(holc_grade=="A")%>%
+  filter(total_pct_hispanic<HOLC_pct_hispanic)
+```
+
+
+
+
 ```{r}
 census_api_key("b83f426335eaf420358cb85a8df817d0f82924c5")
 ```
@@ -195,11 +220,10 @@ fips_codes<-fips_codes%>%
 
 us_state_pop <-us_state_pop%>%left_join(fips_codes, by=c("state_name"))
 
-## I got an error here -Devon  
+## I got an error here -Devon. ##Fixed it - Emmett
 us_state_pop<-us_state_pop%>%
-select(state.x, total_pop, white_pop, Black_pop, Hispanic_pop, Asian_pop)%>%
-  rename(state=state.x)
-  
+select(state, total_pop, white_pop, Black_pop, Hispanic_pop, Asian_pop)
+
 #this code calculate percentage of total population
 us_state_pop<-us_state_pop%>%
   mutate(pct_white=(white_pop/total_pop)*100)%>%

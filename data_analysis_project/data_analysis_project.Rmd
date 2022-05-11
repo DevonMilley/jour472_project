@@ -22,11 +22,11 @@ In this notebook, we are analyzing The Lasting Legacy Of Redlining.
 
 ## Variable explanations
 HOLC Grades
-The Home Owners Loan Corporation was a New Deal-era federal agency that collaborated with local banks, cities and real estate appraisers to rate the “quality” of neighborhoods on a scale of A-D, with A being the best and D the worst. Factors that went into determining a neighborhood’s grade included objective indicators such as access to amenities like parks and transportation, and biased variables based on the economic class and race of residents.
+The Home Owners Loan Corporation was a New Deal-era federal agency that collaborated with local banks, cities and real estate appraisers to rate the “quality” of neighborhoods on a scale of A-D, with A being the best and D the worst. Factors that went into determining a neighborhood’s grade included objective indicators such as access to amenities such as parks and transportation, and biased variables based on the economic class and race of residents.
 
-HOLC grades were then used to determine a homeowner’s qualifications for a mortgage; homeowners in D-grade neighborhoods were less likely to receive friendly mortgages and reduced the value of their homes. The long-term impacts of HOLC grades included a drain of wealth from neighborhoods with unfavorable grades.
+HOLC grades were then used to determine a homeowner’s qualifications for a mortgage; homeowners in D-grade neighborhoods were less likely to receive friendly mortgages and reduced the value of their homes. The long-term impacts of HOLC grades included a drain of wealth from neighborhoods with unfavorable grades that can still be seen today.
 
-HOLC grades will be used as a backdrop for the other variables in our data set. We will focus on how a neighborhood's HOLC grade impacted its current’ racial breakdown.
+HOLC grades will be used as a backdrop for the other variables in our data set. With the data we have available, we will focus on how a neighborhood's HOLC grade impacted its current’ racial breakdown.
 
 
 Demographic Data
@@ -169,15 +169,15 @@ holc_grades_race_region <- metro_grades_w_region %>%
 ## Mean racial composition percentages for A, B, C, and D HOLC Grades by State:
 This code looks at the racial breakdown of HOLC grades, grouped by state. 
 
-When arranging the results by HOLC A grades with the highest average white population percentage, we found that South Carolina is at the top with a figure of 88.98% — this is roughly 15 points higher than the national average for HOLC A grades, which is 73.78%. Other states that followed were Kentucky, Tennessee, Indiana and Virginia, which had white percentages 10 points greater than the national average. 
+When arranging the results by HOLC A grades with the highest average white population percentage, we found that South Carolina is at the top with a figure of 88.98% — this is roughly 15 percentage points higher than the national average for HOLC A grades, which is 73.78%. Other states that followed were Kentucky, Tennessee, Indiana and Virginia, which had white percentages 10 points greater than the national average. 
 
 Conversely, states with Holc D grades that had the highest average Black population percentage include Mississippi, Arkansas, Alabama, Louisiana and North Carolina. Each state was at least 35 percentage points higher than the national average of the Black populations with a Holc D grade.
 
-In our regional analysis, we previously found that Alabama and Mississippi have a less than 50% average white population but the region they're part of had the highest average percent of white population with A-level HOLC grades. The average Black populations in Alabama and Mississippi are 40% and 68%, respectively.
+In our regional analysis, we previously found that Alabama and Mississippi have a less than 50% average white population, but the region they're part of had the highest average percent of white population with A-level HOLC grades. The average Black populations in Alabama and Mississippi are 40% and 68%, respectively.
 
 A scatterplot of the average Black population in all the states and the average Black population percent of HOLC D grades shows a strong positive correlation. A correlation test also shows a very low p-value, indicating the correlation between these two variables is statistically significant and probably not random.
 
-Elsewhere, Maryland had the highest average Black percentage for HOLC A grades, with a figure of 41.04%. This is 35 points greater than the national average of 8.89%. Maryland's Black population is about 44%, so these numbers match pretty well.
+Elsewhere, Maryland had the highest average Black percentage for HOLC A grades, with a figure of 41.04%. This is 35 percentage points greater than the national average of 8.89%. Maryland's Black population is about 44%, so these numbers match pretty well.
 
 ```{r}
 
@@ -231,11 +231,11 @@ cor.test(compare_pop_and_grades_just_d$black_pct_pop, compare_pop_and_grades_jus
 
 Following an investigation that strictly analyzed HOLC neighborhood demographics, we joined our data with Census demographic data and compared racial compositions in HOLC A, B, C and D neighborhoods to the state-wide figures. 
 
-Doing so provided interesting background for our findings in our previous sections. South Carolina, the outlier with an especially high percentage white population in its HOLC A neighborhoods, has a demographic composition not all that different from Maryland, the outlier with an especially high percentage Black population in its HOLC A neighborhoods. According to Census data, Maryland is 55.54% white and 29.89% Black, while South Carolina is 67.16% white and 26.77% Black. Now, although the white population percentages differ more substantially, the Black population percentages are only off by ~3 percentage points. Yet, their HOLC A grade compositions differ heavily from one another.
+Doing so provided interesting background for our findings in our previous sections. South Carolina, the outlier with an especially high percentage white population in its HOLC A neighborhoods, has a demographic composition not all that different from Maryland, the outlier with an especially high percentage Black population in its HOLC A neighborhoods. According to Census data, Maryland is 55.54% white and 29.89% Black, while South Carolina is 67.16% white and 26.77% Black. Although the white population percentages differ more substantially, the Black population percentages are only off by about 3 percentage points. Yet, their HOLC A grade compositions differ heavily from one another.
 
 In an earlier section, we identified that the  West North Central region has an average white population percentage of HOLC D grades of 58.2% — a major outlier in the dataset. Comparing the states that comprise that region's Census data to their HOLC data helped explain why that is. Each state has a white population percentage greater than 80%. 
 
-Summary statistics on this dataset also brought back its own unique findings. 23 of our 37 states with HOLC data had HOLC A demographics less white than their state's Census demographics. Elswhere, nine of 37 states had HOLC A demographics that were more Black than their state's Census demographics, including a chunk of West North Central states like South Dakota, Nebraska, and Iowa. Additionally, eight states' HOLC A demographics were more Hispanic than their state's demographics. This is likely explained by the increased diversity in metro-areas compared to the larger demographics of the state (https://www.usnews.com/news/cities/articles/2020-01-22/americas-cities-are-becoming-more-diverse-new-analysis-shows).
+Summary statistics on this dataset also brought back its own unique findings. 23 of our 37 states with HOLC data had HOLC A demographics less white than their state's Census demographics. Elsewhere, nine of 37 states had HOLC A demographics that were more Black than their state's Census demographics, including a chunk of West North Central states like South Dakota, Nebraska, and Iowa. Additionally, eight states' HOLC A demographics were more Hispanic than their state's demographics. This is likely explained by the increased diversity in metro-areas compared to the larger demographics of the state (https://www.usnews.com/news/cities/articles/2020-01-22/americas-cities-are-becoming-more-diverse-new-analysis-shows).
 
 
 ```{r}
@@ -262,7 +262,7 @@ Through these Datawrapper maps, we visually display the differences between each
 
 2. Texas and South Dakota HOLC A neighborhoods are much less white than state demographics. Such findings reveal, similar to the previous finding, that neighborhoods then considered desirable are now less white than the state average. Conversely, Southeastern states have whiter HOLC A Neighborhoods than their state demographics, possibly indicating that the status quo of HOLC grades and the New Deal-era remain.
 
-3. California, Illinois, and New York HOLC A neighborhoods are all significantly less Hispanic than their state demographics. This is an interesting finding considering the overall diversity of these states. What this could indicate, however, is that these states' Hispanic populations are more concentrated outside of these metro areas, or that they are concentrated in HOLC B, C, and D neighborhoods.
+3. California, Illinois and New York HOLC A neighborhoods are all significantly less Hispanic than their state demographics. This is an interesting finding considering the overall diversity of these states. What this could indicate, however, is that these states' Hispanic populations are more concentrated outside of these metro areas, or that they are concentrated in HOLC B, C and D neighborhoods.
 
 4.Lastly, our maps show that Minnesota and New Hampshire lead states with HOLC A neighborhoods more Asian than their state demographics. 
 
@@ -387,9 +387,10 @@ write_csv(us_asian_holc_dif, "us_asian_holc_dif.csv")
 write_csv(us_hisp_holc_dif, "us_hisp_holc_dif.csv")
 
 ```
+##Code that did not work
 
 ###  What is the Holc grade breakdown by state?
-This process made us realize that our dataset aggregates the A, B, C, and D HOLC grades for each city then summarizes the demographic data for each grade. Thus, when we went to summarize HOLC grades by state, we found that the grade counts were consistent across all columns. Our discovery leads us to a new line of inquiry, however. Next week, we can analyze each state's data in a way similar to the process in Sentence 1 and summarize the mean demographic percentages for each state's A, B, C, and D grades.
+This process made us realize that our data set aggregates the A, B, C and D HOLC grades for each city then summarizes the demographic data for each grade. Thus, when we went to summarize HOLC grades by state, we found that the grade counts were consistent across all columns. Our discovery leads us to a new line of inquiry, however. We will instead try to analyze each state's data in a way similar to the process in Sentence 1 and summarize the mean demographic percentages for each state's A, B, C and D grades.
 ```{r}
 # Put code to reverse engineer sentence here
 
@@ -456,7 +457,7 @@ holc_grades_twenty <-holc_grades_twenty%>%inner_join(holc_count_hispanic, by=c("
 
 #Conclusion
 
-In summary, our investigation centered on the geographic differences of HOLC grades and the racial composition of HOLC neighborhoods. Our findings show that some states have more diverse HOLC A neighborhoods — those considered most desirable to live in — than their state demographics, which indicates diversifying neighborhoods in areas that were once judged negatively for diversity. Additionally, in Southeastern states like South Carolina, the high proportion of white residents in HOLC neighborhoods that once bolstered a neighborhood's A grade, are more white than their state population — a possible lasting side-effect from redlining. 
+In summary, our investigation centered on the geographic differences of HOLC grades and the racial composition of HOLC neighborhoods. Our findings show that some states have more diverse HOLC A neighborhoods — those considered most desirable to live in — than their state demographics, which indicates diversifying neighborhoods in areas that were once judged negatively for diversity. Additionally, in southeastern states like South Carolina, the high proportion of white residents in HOLC neighborhoods that once bolstered a neighborhood's A grade, are more white than their state population — a possible lasting side-effect from redlining. 
 
 
 -30-
